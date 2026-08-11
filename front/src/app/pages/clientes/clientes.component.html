@@ -1,0 +1,211 @@
+<app-navbar></app-navbar>
+<div class="search-container">
+  <h1 class="titulo">Clientes</h1>
+
+  <div class="barra-superior mb-3">
+
+        <div class="input-group buscador-container">
+
+            <input type="text" class="form-control" placeholder="Buscar cliente..." [(ngModel)]="busqueda">
+
+            <button class="btn btn-primary" (click)="abrirPopupCliente()">
+                +
+            </button>
+
+        </div>
+
+    </div>
+    
+
+  <ul class="list-group">
+    <li *ngFor="let cliente of clientesFiltrados" class="list-group-item" (mousedown)="startPress(cliente)"
+      (mouseup)="cancelPress()" (mouseleave)="cancelPress()" (touchstart)="startPress(cliente)"
+      (touchend)="cancelPress()">
+      <div class="cliente-header">
+
+        <h5 (click)="toggleCliente(cliente.id)">
+          {{ cliente.nombre }}
+        </h5>
+
+        <div class="lado-derecho">
+
+          <div class="menu-container">
+
+            <button class="menu-btn" (click)="toggleMenu(cliente.id); $event.stopPropagation()">
+
+              ⋮
+
+            </button>
+
+            <div *ngIf="menuAbierto === cliente.id" class="menu-popup">
+
+              <div class="menu-item" (click)="editarCliente(cliente); $event.stopPropagation()">
+
+                Editar
+
+              </div>
+
+              <div class="menu-item eliminar" (click)="eliminarCliente(cliente); $event.stopPropagation()">
+
+                Eliminar
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+      <div *ngIf="clienteExpandido === cliente.id" class="cliente-detalle">
+        <p><strong>Barrio:</strong> {{ cliente.barrio }}</p>
+        <p><strong>Lote:</strong> {{ cliente.lote }}</p>
+        <p><strong>Manzana:</strong> {{ cliente.manzana }}</p>
+        <p><strong>Dirección:</strong> {{ cliente.direccion }}</p>
+        <p><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- POPUP AGREGAR LIMPIEZA -->
+<div *ngIf="mostrarPopup" class="modal-overlay">
+  <div class="modal-popup">
+
+    <!-- VISTA INICIAL -->
+    <div *ngIf="!mostrarCalendario">
+      <h4>{{ clienteSeleccionado?.nombre }}</h4>
+      <p>Seleccioná una acción</p>
+
+      <button class="btn btn-primary w-100 mb-2" (click)="abrirCalendario()">
+        Agregar a la lista
+      </button>
+
+      <button class="btn btn-outline-secondary w-100" (click)="cerrarPopup()">
+        Cerrar
+      </button>
+    </div>
+
+    <!-- VISTA CALENDARIA -->
+    <div *ngIf="mostrarCalendario">
+      <h4>Elegir fecha</h4>
+
+      <input type="date" class="form-control mb-3" [(ngModel)]="fechaSeleccionada">
+
+      <div class="limpieza-fija-container">
+        <label class="checkbox-fija">
+          <input type="checkbox" [(ngModel)]="nuevaLimpieza.esFija" />
+          Limpieza fija
+        </label>
+
+        <select *ngIf="nuevaLimpieza.esFija" [(ngModel)]="nuevaLimpieza.frecuencia" class="frecuencia-select">
+          <option value="">Frecuencia</option>
+          <option value="semanal">Por semana</option>
+          <option value="quincenal">Cada 15 días</option>
+        </select>
+      </div>
+
+      <button class="btn btn-success w-100 mb-2" (click)="agregarLimpieza()">
+        Agregar limpieza
+      </button>
+
+      <button class="btn btn-outline-secondary w-100" (click)="volverPopup()">
+        Volver
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- POPUP AGREGAR CLIENTE -->
+
+<div *ngIf="mostrarPopupCliente" class="modal-overlay">
+  <div class="modal-popup">
+
+    <h4>Nuevo cliente</h4>
+
+    <input type="text" class="form-control mb-2" placeholder="Nombre" [(ngModel)]="nuevoCliente.nombre" />
+
+    <input type="text" class="form-control mb-2" placeholder="Barrio" [(ngModel)]="nuevoCliente.barrio" />
+
+    <input type="text" class="form-control mb-2" placeholder="Lote" [(ngModel)]="nuevoCliente.lote" />
+
+    <input type="text" class="form-control mb-2" placeholder="Manzana" [(ngModel)]="nuevoCliente.manzana" />
+
+    <input type="text" class="form-control mb-2" placeholder="Dirección" [(ngModel)]="nuevoCliente.direccion" />
+
+    <input type="text" class="form-control mb-3" placeholder="Teléfono" [(ngModel)]="nuevoCliente.telefono" />
+
+    <button class="btn btn-success w-100 mb-2" (click)="guardarCliente()">
+      Guardar
+    </button>
+
+    <button class="btn btn-outline-secondary w-100" (click)="cerrarPopupCliente()">
+      Cancelar
+    </button>
+
+  </div>
+</div>
+
+<!--POPUP EDITAR CLIENTE-->
+<div *ngIf="mostrarPopupEditarCliente" class="modal-overlay">
+
+  <div class="modal-popup">
+
+    <h4>Editar cliente</h4>
+
+    <input type="text" class="form-control mb-2" placeholder="Nombre" [(ngModel)]="clienteEditando.nombre" />
+
+    <input type="text" class="form-control mb-2" placeholder="Barrio" [(ngModel)]="clienteEditando.barrio" />
+
+    <input type="text" class="form-control mb-2" placeholder="Lote" [(ngModel)]="clienteEditando.lote" />
+
+    <input type="text" class="form-control mb-2" placeholder="Manzana" [(ngModel)]="clienteEditando.manzana" />
+
+    <input type="text" class="form-control mb-2" placeholder="Dirección" [(ngModel)]="clienteEditando.direccion" />
+
+    <input type="text" class="form-control mb-3" placeholder="Teléfono" [(ngModel)]="clienteEditando.telefono" />
+
+    <button class="btn btn-success w-100 mb-2" (click)="guardarEdicionCliente()">
+
+      Guardar cambios
+
+    </button>
+
+    <button class="btn btn-secondary w-100" (click)="cerrarPopupEditarCliente()">
+
+      Cancelar
+
+    </button>
+
+  </div>
+
+</div>
+
+<!-- POPUP ELIMINAR CLIENTE -->
+
+<div *ngIf="mostrarConfirmacionEliminar" class="modal-overlay">
+  <div class="modal-popup">
+
+    <h4>Eliminar cliente</h4>
+
+    <p>
+      ¿Seguro que querés eliminar
+      <strong>{{ clienteAEliminar?.nombre }}</strong>?
+    </p>
+
+    <button
+      class="btn btn-danger w-100 mb-2"
+      (click)="confirmarEliminar()">
+      Sí, eliminar
+    </button>
+
+    <button
+      class="btn btn-outline-secondary w-100"
+      (click)="cancelarEliminar()">
+      Cancelar
+    </button>
+
+  </div>
+</div>

@@ -1,0 +1,302 @@
+<app-navbar></app-navbar>
+<div class="search-container">
+  <div class="semana-card">
+    <button class="semana-btn" (click)="semanaAnterior()">‹</button>
+
+    <span class="semana-texto">{{ rangoSemana }}</span>
+
+    <button class="semana-btn" (click)="semanaSiguiente()">›</button>
+  </div>
+
+  <div *ngFor="let dia of dias" class="day-card">
+
+    <div class="day-header" (click)="toggleDia(dia)">
+      <span>{{ dia.nombre }}</span>
+    </div>
+
+    <div *ngIf="dia.abierto" class="dropdown-content">
+
+      <div *ngFor="let limpieza of dia.limpiezas" class="pool-item">
+
+        <div class="cliente-bloque">
+
+          <strong class="cliente-click" (click)="toggleDetalle(limpieza)">
+            {{ limpieza.nombreCliente }}
+          </strong>
+
+          <span *ngIf="limpieza.esFija" class="badge-frecuencia">
+            {{ limpieza.frecuencia === 'quincenal' ? 'c/15 días' : 'semanal' }}
+          </span>
+
+          <span *ngIf="limpieza.estadoPago === 'debe'" class="badge-debe">
+            debe
+          </span>
+
+          <div *ngIf="limpieza.expandido" class="detalle-limpieza">
+
+            <div *ngFor="let producto of limpieza.productos">
+              {{ producto.nombre }} x{{ producto.cantidad }}
+            </div>
+
+            <div *ngIf="limpieza.estado.toLowerCase() === 'hecho'" [ngClass]="{
+    'precio-hecho': limpieza.estadoPago === 'pagado',
+    'precio-debe': limpieza.estadoPago === 'debe'
+  }">
+
+              {{ limpieza.estadoPago === 'pagado' ? '+' : '' }}
+              ${{ calcularTotalLimpieza(limpieza) }}
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="acciones-derecha">
+
+          <span class="estado-badge" [ngClass]="{
+        'pendiente': limpieza.estado.toLowerCase() === 'pendiente',
+        'hecho': limpieza.estado.toLowerCase() === 'hecho'
+      }" (click)="manejarClickEstado(limpieza)">
+            {{ limpieza.estado }}
+          </span>
+
+          <div class="menu-container">
+
+            <button class="menu-btn" (click)="toggleMenu(limpieza.id); $event.stopPropagation()">
+
+              ⋮
+
+            </button>
+
+            <div *ngIf="menuAbierto === limpieza.id" class="menu-popup">
+
+              <div class="menu-item" (click)="abrirPopupProductos(limpieza);
+                      menuAbierto = null">
+
+                Productos
+
+              </div>
+
+              <div class="menu-item eliminar" (click)="abrirPopupEliminar(limpieza);
+                      menuAbierto = null">
+
+                Eliminar
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<app-bottom-nav></app-bottom-nav>
+
+<!-- POPUP ESTADO -->
+<div *ngIf="mostrarPopupEstado" class="modal-overlay">
+
+  <div class="modal-popup">
+
+    <h4>{{ limpiezaSeleccionada?.nombreCliente }}</h4>
+
+    <!-- Pantalla principal -->
+    <div *ngIf="!mostrarReprogramar">
+
+      <input type="number" class="form-control mb-3" placeholder="Monto" [(ngModel)]="montoLimpieza" />
+
+      <button *ngIf="limpiezaSeleccionada?.estado?.toLowerCase() === 'pendiente'" class="btn btn-success w-100 mb-2"
+        (click)="marcarComoHecho()">
+
+        Marcar como hecho
+
+      </button>
+
+      <button *ngIf="limpiezaSeleccionada?.estado?.toLowerCase() === 'hecho'" class="btn btn-warning w-100 mb-2"
+        (click)="volverPendiente()">
+
+        Volver a pendiente
+
+      </button>
+
+      <button class="btn btn-primary w-100" (click)="mostrarReprogramar = true">
+
+        Reprogramar
+
+      </button>
+
+    </div>
+
+    <!-- Pantalla reprogramar -->
+    <div *ngIf="mostrarReprogramar">
+
+      <input type="date" class="form-control mb-3" [(ngModel)]="nuevaFecha" />
+
+      <button class="btn btn-success w-100 mb-2" (click)="reprogramarLimpieza()">
+
+        Guardar nueva fecha
+
+      </button>
+
+      <button class="btn btn-outline-secondary w-100" (click)="mostrarReprogramar = false">
+
+        Volver
+
+      </button>
+
+    </div>
+
+    <button class="btn btn-outline-secondary w-100 mt-2" (click)="cerrarPopupEstado()">
+
+      Cancelar
+
+    </button>
+
+  </div>
+
+</div>
+
+<!--POPUP PAGO-->
+<div *ngIf="mostrarPopupPago" class="modal-overlay">
+  <div class="modal-popup">
+
+    <h4>Marcar limpieza como hecha</h4>
+
+    <button class="btn btn-success w-100 mb-2" (click)="marcarPago('pagado')">
+      Pagó
+    </button>
+
+    <button class="btn btn-warning w-100 mb-1" (click)="marcarPago('debe')">
+      Debe
+    </button>
+
+    <button class="btn btn-outline-secondary w-100 mt-2" (click)="mostrarPopupPago = false">
+      Cancelar
+    </button>
+
+  </div>
+</div>
+
+<!-- POPUP ELIMINAR -->
+
+<div *ngIf="mostrarPopupEliminar" class="modal-overlay">
+  <div class="modal-popup">
+
+    <h4>Eliminar limpieza</h4>
+
+    <p>
+      ¿Qué desea eliminar de
+      <strong>{{ limpiezaSeleccionada?.nombreCliente }}</strong>?
+    </p>
+
+    <!-- Solo para limpiezas fijas -->
+    <div *ngIf="limpiezaSeleccionada?.esFija" class="mb-3">
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="individual" name="opcionEliminar" value="individual"
+          [(ngModel)]="opcionEliminar">
+
+        <label class="form-check-label" for="individual">
+          Solo esta limpieza
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="futuras" name="opcionEliminar" value="futuras"
+          [(ngModel)]="opcionEliminar">
+
+        <label class="form-check-label" for="futuras">
+          Esta y las futuras
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="serie" name="opcionEliminar" value="serie"
+          [(ngModel)]="opcionEliminar">
+
+        <label class="form-check-label" for="serie">
+          Toda la serie
+        </label>
+      </div>
+
+    </div>
+
+    <!-- Si no es fija -->
+    <div *ngIf="!limpiezaSeleccionada?.esFija">
+      <p>Esta limpieza se eliminará definitivamente.</p>
+    </div>
+
+    <button class="btn btn-danger w-100 mb-2" (click)="eliminarLimpieza()">
+      Eliminar
+    </button>
+
+    <button class="btn btn-outline-secondary w-100" (click)="cerrarPopupEliminar()">
+      Cancelar
+    </button>
+
+  </div>
+</div>
+
+
+
+<!--POPUP PRODUCTO-->
+
+<div *ngIf="mostrarPopupProductos" class="modal-overlay">
+  <div class="modal-productos">
+
+    <h4>Productos</h4>
+
+    <!-- buscador -->
+    <input type="text" class="form-control mb-3" placeholder="Buscar producto..." [(ngModel)]="busquedaProducto" />
+
+    <!-- lista para agregar -->
+    <div class="productos-disponibles">
+      <div *ngFor="let producto of productosDisponiblesFiltrados" class="producto-item">
+        <span class="producto-info">
+          {{ producto.nombre }} - ${{ producto.precio }}
+        </span>
+
+        <button class="btn btn-primary btn-sm" (click)="agregarProductoALimpieza(producto)">
+          +
+        </button>
+      </div>
+    </div>
+
+
+    <hr />
+
+    <h5>Agregados</h5>
+
+    <div class="productos-agregados">
+
+      <div *ngIf="!limpiezaSeleccionada?.productos?.length">
+        No hay productos cargados
+      </div>
+
+      <div *ngFor="let producto of limpiezaSeleccionada?.productos" class="producto-agregado-item">
+        <span class="producto-info">
+          {{ producto.nombre }}
+        </span>
+
+        <div class="producto-actions">
+          <input type="number" min="1" [(ngModel)]="producto.cantidad" (change)="actualizarCantidadProducto(producto)"
+            class="cantidad-input" />
+
+          <button class="delete-btn" (click)="quitarProductoDeLimpieza(producto)">
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-outline-secondary w-100 mt-3" (click)="cerrarPopupProductos()">
+      Listo
+    </button>
+  </div>
+</div>

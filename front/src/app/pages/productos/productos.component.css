@@ -1,0 +1,81 @@
+.titulo {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.search-container {
+  padding: 20px;
+  padding-bottom: 90px;
+}
+
+.barra-superior {
+    margin-bottom: 20px;
+}
+
+.buscador-container {
+    max-width: 650px;
+}
+
+.buscador {
+  width: 420px;
+}
+
+.btn-agregar {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 22px;
+}
+
+.top-actions {
+  margin-bottom: 20px;
+}
+
+.producto-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.precio {
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background-color: rgba(0, 0, 0, 0.7);
+
+  z-index: 999999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-popup {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  min-height: 200px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.list-group-item {
+  cursor: pointer;
+}

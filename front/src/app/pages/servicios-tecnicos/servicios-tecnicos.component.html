@@ -1,0 +1,446 @@
+<app-navbar></app-navbar>
+
+<div class="container mt-4">
+
+    <h1 class="titulo">Servicios Técnicos</h1>
+
+    <div class="barra-superior mb-3">
+
+        <div class="input-group buscador-container">
+
+            <input type="text" class="form-control" placeholder="Buscar cliente..." [(ngModel)]="busqueda">
+
+            <button class="btn btn-primary" (click)="abrirPopup()">
+                +
+            </button>
+
+        </div>
+
+    </div>
+
+    <div *ngFor="let cliente of clientesAgrupados" class="cliente-card">
+
+        <div class="cliente-header" (pointerup)="toggleCliente(cliente.nombre); cancelarLongPress()"
+            (pointerdown)="iniciarLongPress(cliente.nombre)" (pointerleave)="cancelarLongPress()"
+            (pointercancel)="cancelarLongPress()">
+
+            <span> {{ cliente.nombre }} </span>
+
+            <div class="lado-derecho">
+
+                <span class="contador">
+                    {{ cliente.servicios.length }}
+                </span>
+
+                <span class="estado-badge" [ngClass]="cliente.estadoGeneral">
+                    {{ cliente.estadoGeneral }}
+                </span>
+
+            </div>
+
+        </div>
+
+        <div *ngIf="clienteExpandido === cliente.nombre" class="detalle-servicios">
+
+            <div *ngFor="let servicio of cliente.servicios" class="servicio-item">
+
+                <div class="servicio-header">
+
+                    <div>
+                        <strong>{{ servicio.titulo || 'Sin título' }}</strong>
+
+                        <div class="text-muted small">
+                            {{ servicio.fecha | date:'dd/MM/yyyy' }}
+                        </div>
+                    </div>
+
+                    <div class="lado-derecho">
+
+                        <span class="estado-badge" [ngClass]="servicio.estado"
+                            (click)="abrirPopupEstado(servicio); $event.stopPropagation()">
+                            {{ servicio.estado }}
+                        </span>
+
+                        <div class="menu-container">
+
+                            <button class="menu-btn" (click)="toggleMenu(servicio.id); $event.stopPropagation()">
+                                ⋮
+                            </button>
+
+                            <div *ngIf="menuAbierto === servicio.id" class="menu-popup">
+
+                                <div class="menu-item" (click)="editarServicio(servicio); $event.stopPropagation()">
+                                    Editar
+                                </div>
+
+                                <div class="menu-item eliminar"
+                                    (click)="abrirPopupEliminarServicio(servicio); $event.stopPropagation()">
+                                    Eliminar
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <p>Diagnóstico: {{ servicio.diagnostico }}</p>
+
+                <p>Trabajo: {{ servicio.trabajoRealizado }}</p>
+
+                <p>Observaciones: {{ servicio.observaciones }}</p>
+
+                <p *ngIf="servicio.estado === 'hecho'">
+                    Precio: ${{ servicio.precio }}
+                </p>
+
+                <!-- BOMBAS -->
+                <div *ngIf="servicio.bombas?.length">
+
+                    <h6 class="mt-3">Bombas</h6>
+
+                    <div *ngFor="let bomba of servicio.bombas" class="bomba-item">
+
+                        <p>Marca: {{ bomba.marca }}</p>
+
+                        <p>HP: {{ bomba.hp }}</p>
+
+                        <p>Realizar: {{ bomba.realizar }}</p>
+
+                    </div>
+
+                </div>
+
+                <div>
+                    <p *ngIf="servicio.estadoPago === 'pagado'" class="pagado-badge">
+                        Pagado
+                    </p>
+
+                    <p *ngIf="servicio.estadoPago === 'debe'" class="debe-badge">
+                        Debe
+                    </p>
+                </div>
+
+                <div class="d-flex gap-2 mt-2">
+
+                    <label class="btn btn-outline-dark mb-0">
+                        Agregar foto
+
+                        <input type="file" accept="image/*" hidden (change)="subirFoto($event, servicio)">
+                    </label>
+
+                </div>
+
+                <button class="btn-toggle-fotos" (click)="mostrarMiniaturas = !mostrarMiniaturas">
+
+                    <span [class.abierto]="mostrarMiniaturas">
+
+                        <span></span>
+                        <span></span>
+
+                    </span>
+
+                    {{ mostrarMiniaturas ? 'Ocultar fotos' : 'Fotos' }}
+
+                </button>
+
+                <div class="galeria-fotos" *ngIf="mostrarMiniaturas && servicio.fotos?.length">
+
+                    <div class="foto-miniatura" *ngFor="let foto of servicio.fotos">
+
+                        <img [src]="'http://localhost:5130/Uploads/Servicios/' + servicio.id + '/' + foto.nombreArchivo"
+                            (click)="abrirFoto(foto, servicio)">
+
+                        <button class="btn-eliminar-foto"
+                            (click)="eliminarFoto(foto, servicio); $event.stopPropagation()">
+
+                            ×
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- POPUP AGREGAR SERVICIO -->
+<div *ngIf="mostrarPopup" class="modal-overlay">
+    <div class="modal-popup">
+
+        <h4>Nuevo servicio</h4>
+
+        <input type="date" class="form-control mb-2" [(ngModel)]="nuevoRegistro.fecha" />
+
+        <input type="text" class="form-control mb-2" placeholder="Título" [(ngModel)]="nuevoRegistro.titulo" />
+
+        <input type="text" class="form-control mb-2" placeholder="Buscar cliente" [(ngModel)]="busquedaCliente"
+            (focus)="mostrarSugerencias = true" />
+
+        <div *ngIf="mostrarSugerencias && busquedaCliente" class="lista-sugerencias">
+            <div *ngFor="let cliente of clientesFiltrados" class="sugerencia-item"
+                (click)="seleccionarCliente(cliente)">
+                {{ cliente.nombre }}
+            </div>
+        </div>
+
+        <input type="text" class="form-control mb-2" placeholder="Teléfono" [(ngModel)]="nuevoRegistro.telefono" />
+
+        <input type="text" class="form-control mb-2" placeholder="Dirección" [(ngModel)]="nuevoRegistro.direccion" />
+
+        <input type="text" class="form-control mb-2" placeholder="Barrio" [(ngModel)]="nuevoRegistro.barrio" />
+
+        <input type="text" class="form-control mb-2" placeholder="Lote" [(ngModel)]="nuevoRegistro.lote" />
+
+        <input type="text" class="form-control mb-2" placeholder="Manzana" [(ngModel)]="nuevoRegistro.manzana" />
+
+        <textarea class="form-control mb-2" placeholder="Diagnóstico"
+            [(ngModel)]="nuevoRegistro.diagnostico"></textarea>
+
+        <textarea class="form-control mb-2" placeholder="Trabajo realizado"
+            [(ngModel)]="nuevoRegistro.trabajoRealizado"></textarea>
+
+        <textarea class="form-control mb-3" placeholder="Observaciones"
+            [(ngModel)]="nuevoRegistro.observaciones"></textarea>
+
+        <button class="btn btn-success w-100 mb-2" (click)="guardarRegistro()">
+            Guardar
+        </button>
+
+        <button class="btn btn-secondary w-100" (click)="cerrarPopup()">
+            Cancelar
+        </button>
+
+    </div>
+</div>
+
+<!-- POPUP ESTADO -->
+<div *ngIf="mostrarPopupEstado" class="modal-overlay">
+    <div class="modal-popup">
+
+        <h4>{{ servicioSeleccionado?.nombre }}</h4>
+
+        <input *ngIf="servicioSeleccionado?.estado === 'pendiente'" type="number" class="form-control mb-3"
+            placeholder="Precio" [(ngModel)]="precioServicio" />
+
+        <div *ngIf="servicioSeleccionado?.estado === 'pendiente'">
+
+            <button class="btn btn-success w-100 mb-2" (click)="marcarEstado('pagado')">
+                Pagó
+            </button>
+
+            <button class="btn btn-warning w-100 mb-2" (click)="marcarEstado('debe')">
+                Debe
+            </button>
+
+        </div>
+
+        <div *ngIf="servicioSeleccionado?.estado === 'hecho'">
+
+            <button class="btn btn-outline-warning w-100 mb-2" (click)="volverPendiente()">
+                Volver a pendiente
+            </button>
+
+        </div>
+
+        <button class="btn btn-secondary w-100" (click)="cerrarPopupEstado()">
+            Cancelar
+        </button>
+
+    </div>
+</div>
+
+<!-- POPUP AGREGAR BOMBA -->
+<div *ngIf="mostrarPopupBomba" class="modal-overlay">
+    <div class="modal-popup">
+
+        <h4>Agregar bomba</h4>
+
+        <input type="text" class="form-control mb-2" placeholder="HP" [(ngModel)]="nuevaBomba.hp" />
+
+        <input type="text" class="form-control mb-2" placeholder="Marca" [(ngModel)]="nuevaBomba.marca" />
+
+        <select class="form-control mb-3" [(ngModel)]="nuevaBomba.realizar">
+            <option value="">Seleccionar acción</option>
+            <option value="presupuestar">Presupuestar</option>
+            <option value="reparar">Reparar</option>
+        </select>
+
+        <button class="btn btn-success w-100 mb-2" (click)="guardarBomba()">
+            Guardar bomba
+        </button>
+
+        <button class="btn btn-secondary w-100" (click)="cerrarPopupBomba()">
+            Cancelar
+        </button>
+
+    </div>
+</div>
+
+<!--POPUP EDITAR SERVICIO-->
+<div *ngIf="mostrarPopupEditar" class="modal-overlay">
+
+    <div class="modal-popup">
+
+        <h4>Editar servicio</h4>
+
+        <input type="text" class="form-control mb-2" placeholder="Título" [(ngModel)]="servicioEditando.titulo" />
+
+        <textarea class="form-control mb-2" placeholder="Diagnóstico" [(ngModel)]="servicioEditando.diagnostico">
+        </textarea>
+
+        <textarea class="form-control mb-2" placeholder="Trabajo realizado"
+            [(ngModel)]="servicioEditando.trabajoRealizado">
+        </textarea>
+
+        <textarea class="form-control mb-3" placeholder="Observaciones" [(ngModel)]="servicioEditando.observaciones">
+        </textarea>
+
+        <button class="btn btn-success w-100 mb-2" (click)="guardarEdicion()">
+
+            Guardar cambios
+
+        </button>
+
+        <button class="btn btn-secondary w-100" (click)="cerrarPopupEditar()">
+
+            Cancelar
+
+        </button>
+
+    </div>
+
+</div>
+
+<!--MOSTRAR MENU CLIENTE ELIMINAR-->
+
+<div *ngIf="mostrarMenuCliente" class="modal-overlay">
+
+    <div class="modal-popup">
+
+        <h4>{{ clienteSeleccionado }}</h4>
+
+        <button class="btn btn-danger w-100 mb-2" (click)="preguntarEliminarCliente()">
+
+            Eliminar cliente
+
+        </button>
+
+        <button class="btn btn-secondary w-100" (click)="mostrarMenuCliente=false">
+
+            Cancelar
+
+        </button>
+
+    </div>
+
+</div>
+
+<div *ngIf="mostrarConfirmacionCliente" class="modal-overlay">
+
+    <div class="modal-popup">
+
+        <h4>Eliminar cliente</h4>
+
+        <p>
+            Se eliminarán todos los servicios técnicos del cliente
+            <strong>{{ clienteSeleccionado }}</strong>.
+        </p>
+
+        <p>Esta acción no se puede deshacer.</p>
+
+        <button class="btn btn-danger w-100 mb-2" (click)="confirmarEliminarCliente()">
+
+            Sí, eliminar
+
+        </button>
+
+        <button class="btn btn-outline-secondary w-100" (click)="cancelarEliminarCliente()">
+
+            Cancelar
+
+        </button>
+
+    </div>
+
+</div>
+
+<!--POPUP FOTO-->
+
+<div class="modal-overlay" *ngIf="fotoSeleccionada">
+
+    <div class="foto-popup">
+
+        <button class="cerrar-foto" (click)="fotoSeleccionada = null">
+
+            ×
+
+        </button>
+
+        <img
+            [src]="'http://localhost:5130/Uploads/Servicios/' + servicioFotoSeleccionada.id + '/' + fotoSeleccionada.nombreArchivo">
+
+    </div>
+
+</div>
+
+<!--POPUP ELIMINAR-->
+
+<div *ngFor="let servicio of servicios">
+
+</div>
+
+<!-- Fuera del ngFor y al final del HTML -->
+<div class="modal-overlay" *ngIf="mostrarPopupEliminarServicio">
+
+    <div class="modal-confirmacion">
+
+        <h3>Eliminar servicio</h3>
+
+        <p>¿Estás seguro de que querés eliminar este servicio?</p>
+
+        <div class="acciones">
+            <button class="btn btn-secondary" (click)="cancelarEliminarServicio()">
+                Cancelar
+            </button>
+
+            <button class="btn btn-danger" (click)="confirmarEliminarServicio()">
+                Sí, eliminar
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- POPUP ELIMINAR FOTO -->
+<div *ngIf="mostrarPopupEliminarFoto" class="modal-overlay">
+
+    <div class="modal-popup">
+
+        <h4>Eliminar foto</h4>
+
+        <p>
+            ¿Seguro que querés eliminar esta foto?
+        </p>
+
+        <button class="btn btn-danger w-100 mb-2" (click)="confirmarEliminarFoto()">
+            Sí, eliminar
+        </button>
+
+        <button class="btn btn-outline-secondary w-100" (click)="cancelarEliminarFoto()">
+            Cancelar
+        </button>
+
+    </div>
+
+</div>

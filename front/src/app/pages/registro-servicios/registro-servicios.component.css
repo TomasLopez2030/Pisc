@@ -1,0 +1,135 @@
+.container {
+  padding: 20px;
+}
+
+.search-container {
+  padding: 20px;
+}
+
+.titulo {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.titulo-seccion {
+  margin: 20px 0 12px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.dh-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.columna {
+  width: 100%;
+}
+
+.cliente-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.cliente-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.badge-debe-cantidad {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fef3c7;
+  color: #a16207;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.badge-haber-cantidad {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #166534;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.detalle-item {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.fila-precio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.precio-debe {
+  color: #ca8a04;
+  font-weight: bold;
+}
+
+.precio-hecho {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.badge-pendiente {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 14px;
+  background: #ffeeba;
+  color: #ca8a04;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.badge-hecho {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 14px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-popup {
+  background: white;
+  width: 90%;
+  max-width: 420px;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}

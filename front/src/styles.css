@@ -1,0 +1,25 @@
+/* Todos los SweetAlert del proyecto */
+.swal2-popup {
+    width: 550px !important;
+    max-width: 550px !important;
+    border-radius: 16px;
+    padding: 1.8rem;
+}
+
+.swal2-title {
+    font-size: 1.8rem;
+}
+
+.swal2-html-container {
+    font-size: 1rem;
+}
+
+.swal2-actions {
+    margin-top: 1.5rem;
+}
+
+.swal2-confirm,
+.swal2-cancel {
+    min-width: 120px;
+    font-size: 1rem;
+}/* You can add global styles to this file, and also import other style files */

@@ -1,0 +1,114 @@
+<app-navbar></app-navbar>
+
+<div class="search-container">
+  <h1 class="titulo">Productos</h1>
+
+  <div class="barra-superior mb-3">
+
+    <div class="input-group buscador-container">
+
+      <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="busqueda">
+
+      <button class="btn btn-primary" (click)="abrirPopupProducto()">
+        +
+      </button>
+
+    </div>
+
+  </div>
+  <ul class="list-group">
+    <li *ngFor="let producto of productosFiltrados" class="list-group-item" (mousedown)="startPress(producto)"
+      (mouseup)="cancelPress()" (mouseleave)="cancelPress()" (touchstart)="startPress(producto)"
+      (touchend)="cancelPress()">
+      <div class="producto-row">
+        <strong>{{ producto.nombre }}</strong>
+        <span class="precio">${{ producto.precio }}</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+
+<!-- POPUP OPCIONES -->
+<div *ngIf="mostrarPopup" class="modal-overlay">
+  <div class="modal-popup">
+
+    <h4>{{ productoSeleccionado?.nombre }}</h4>
+
+    <button class="btn btn-success w-100 mb-2" (click)="editarProducto()">
+      Editar
+    </button>
+
+    <button class="btn btn-danger w-100 mb-2" (click)="eliminarProducto()">
+      Eliminar
+    </button>
+
+    <button class="btn btn-outline-secondary w-100" (click)="cerrarPopup()">
+      Cerrar
+    </button>
+
+  </div>
+</div>
+
+
+<!-- POPUP NUEVO PRODUCTO -->
+<div *ngIf="mostrarPopupProducto" class="modal-overlay">
+  <div class="modal-popup">
+
+    <h4>Nuevo producto</h4>
+
+    <input type="text" class="form-control mb-2" placeholder="Nombre" [(ngModel)]="nuevoProducto.nombre" />
+
+    <input type="number" class="form-control mb-3" placeholder="Precio" [(ngModel)]="nuevoProducto.precio" />
+
+    <button class="btn btn-success w-100 mb-2" (click)="guardarProducto()">
+      Guardar
+    </button>
+
+    <button class="btn btn-outline-secondary w-100" (click)="cerrarPopupProducto()">
+      Cancelar
+    </button>
+
+  </div>
+</div>
+
+<!--POPUP EDITAR-->
+
+<div *ngIf="mostrarPopupEditar" class="modal-overlay">
+  <div class="modal-popup">
+
+    <h4>Editar producto</h4>
+
+    <input type="text" class="form-control mb-2" [(ngModel)]="productoEditando.nombre" />
+
+    <input type="number" class="form-control mb-3" [(ngModel)]="productoEditando.precio" />
+
+    <button class="btn btn-success w-100 mb-2" (click)="guardarEdicion()">
+      Guardar cambios
+    </button>
+
+    <button class="btn btn-outline-secondary w-100" (click)="cerrarPopupEditar()">
+      Cancelar
+    </button>
+
+  </div>
+</div>
+
+<!--POPUP ELIMINAR-->
+
+<div *ngIf="mostrarConfirmacionEliminar" class="modal-overlay">
+  <div class="modal-popup">
+
+    <h4>Eliminar producto</h4>
+    <p>¿Seguro que querés eliminar este producto?</p>
+
+    <button class="btn btn-danger w-100 mb-2" (click)="confirmarEliminar()">
+      Sí, eliminar
+    </button>
+
+    <button class="btn btn-outline-secondary w-100" (click)="cancelarEliminar()">
+      Cancelar
+    </button>
+
+  </div>
+</div>
