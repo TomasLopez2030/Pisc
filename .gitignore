@@ -1,0 +1,32 @@
+# .NET
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Angular / Node
+**/node_modules/
+**/dist/
+.angular/
+
+# Logs
+*.log
+
+# Environment / local configuration
+.env
+.env.*
+appsettings.Development.json
+
+# Uploads generados por la aplicación
+**/Uploads/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Sistema
+Thumbs.db
+.DS_Store

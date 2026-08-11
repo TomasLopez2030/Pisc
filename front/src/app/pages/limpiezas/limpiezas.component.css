@@ -1,0 +1,385 @@
+.container {
+  padding: 20px;
+  margin-bottom: 100px;
+}
+
+.search-container {
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #0f172a;
+}
+
+.day-card {
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #f8fafc;
+}
+
+.day-header:hover {
+  background: #e2e8f0;
+}
+
+.dropdown-content {
+  padding: 15px;
+}
+
+.pool-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.pendiente {
+  background: orange;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.hecho {
+  background: green;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.total-ganancias {
+  margin-top: 30px;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background-color: rgba(0, 0, 0, 0.7);
+
+  z-index: 999999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-popup {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  min-height: 200px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+
+.limpieza-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.estado-badge {
+  cursor: pointer;
+}
+
+.delete-btn {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 40%;
+  background: #f8fafc;
+  color: #dc3545;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #dc3545;
+  color: white;
+}
+
+.cliente-bloque {
+  flex: 1;
+}
+
+.cliente-click {
+  cursor: pointer;
+}
+
+.detalle-limpieza {
+  margin-top: 10px;
+  padding-left: 4px;
+  font-size: 14px;
+  color: #111827;
+}
+
+.precio-hecho {
+  color: green;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.acciones-derecha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.producto-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+}
+
+.producto-info {
+  flex: 1;
+}
+
+.add-btn {
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  border-radius: 8px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-weight: bold;
+}
+
+.producto-agregado-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+}
+
+.producto-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.producto-btn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: #eff6ff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.producto-btn:hover {
+  background: #dbeafe;
+}
+
+.cantidad-input {
+  width: 60px;
+  text-align: center;
+  margin: 0 10px;
+}
+
+.modal-productos {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 420px;
+  height: 600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.productos-disponibles {
+  height: 180px;
+  overflow-y: scroll;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  padding: 8px;
+}
+
+.productos-agregados {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.semana-card {
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 18px;
+  min-height: 55px;
+}
+
+.semana-texto {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.semana-btn {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+
+  font-size: 28px;
+  font-weight: 300;
+  color: #64748b;
+
+  cursor: pointer;
+
+  padding: 0;
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: 0.2s ease;
+}
+
+.semana-btn:hover {
+  color: #0f172a;
+  transform: scale(1.08);
+}
+
+.semana-btn:active {
+  transform: scale(0.95);
+}
+
+.badge-frecuencia {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.badge-debe {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ca8a04;
+  background: #fef3c7;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.precio-hecho {
+  color: green;
+  font-weight: 700;
+}
+
+.precio-debe {
+  color: #ca8a04;
+  font-weight: 700;
+}
+
+.menu-container {
+    position: relative;
+}
+
+.menu-btn {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #f3f3f3;
+
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.menu-btn:hover {
+    background: #e9e9e9;
+}
+
+.menu-popup{
+
+    position:absolute;
+
+    bottom:36px;
+    right:0;
+
+    width:170px;
+
+    background:white;
+    border-radius:10px;
+    box-shadow:0 6px 18px rgba(0,0,0,.15);
+
+    z-index:9999;
+}
+
+.menu-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.menu-item:hover {
+    background: #f5f5f5;
+}
+
+.menu-item.eliminar {
+    color: #dc3545;
+    font-weight: 600;
+}
