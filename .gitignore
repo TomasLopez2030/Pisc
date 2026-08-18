@@ -30,3 +30,6 @@ appsettings.Development.json
 # Sistema
 Thumbs.db
 .DS_Store
+
+# Capacitor / Android generado
+front/android/
