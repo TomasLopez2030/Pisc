@@ -1,25 +1,35 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-  <!-- Banner -->
-  <div class="banner">
+
+  <!-- Menú -->
+  <div class="menu">
+
+    <app-card-menu
+      title="Mantenimientos"
+      route="/limpiezas">
+    </app-card-menu>
+
+    <app-card-menu
+      title="Productos"
+      route="/productos">
+    </app-card-menu>
+
+    <app-card-menu
+      title="Clientes"
+      route="/clientes">
+    </app-card-menu>
+
+    <app-card-menu
+      title="Servicios"   
+      route="/servicios">
+    </app-card-menu>
+
+    <app-card-menu
+      title="Registro"  
+      route="/debe-haber">
+    </app-card-menu>
 
   </div>
-
-  <!-- Cards -->
-  <app-card-menu title="Mantenimientos" route="/limpiezas">
-  </app-card-menu>
-
-  <app-card-menu title="Productos" route="/productos">
-  </app-card-menu>
-
-  <app-card-menu title="Clientes" route="/clientes">
-  </app-card-menu>
-
-  <app-card-menu title="Servicios" route="/servicios">
-  </app-card-menu>
-
-  <app-card-menu title="Registro" route="/debe-haber">
-  </app-card-menu>
 
 </div>
