@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class BombasService {
-  private apiUrl = 'http://localhost:5130/api/bombas';
+  private apiUrl = 'http://192.168.100.18:5130/api/bombas';
 
   constructor(private http: HttpClient) {}
 

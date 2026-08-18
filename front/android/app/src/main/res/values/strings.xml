@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Pisc</string>
+    <string name="title_activity_main">Pisc</string>
+    <string name="package_name">com.pisc.app</string>
+    <string name="custom_url_scheme">com.pisc.app</string>
+</resources>
