@@ -1,22 +1,163 @@
 .card {
+  position: relative;
+
   display: flex;
   align-items: center;
-  background: #f5f7fa;
-  border-radius: 16px;
-  padding: 16px;
-  margin: 10px 0;
+
+  width: 100%;
+  min-height: 85px;
+
+  padding: 18px 22px;
+  margin-bottom: 18px;
+
+  background: linear-gradient(
+    145deg,
+    #54a2af,
+    #046694
+  );
+
+  border: 1px solid rgba(80, 160, 220, 0.35);
+  border-radius: 14px;
+
+  color: white;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 0 #0f4e91,
+    0 12px 25px rgba(0, 0, 0, 0.418);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
+
+/* =========================
+   ICONO
+   ========================= */
+
 .icon {
-  font-size: 24px;
-  margin-right: 15px;
+  width: 55px;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 18px;
+
+  font-size: 28px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  border-radius: 12px;
+
+  transition: 0.2s ease;
+}
+
+
+/* =========================
+   TEXTO
+   ========================= */
+
+.text {
+  flex: 1;
 }
 
 .text h3 {
   margin: 0;
+
+  font-size: 20px;
+  font-weight: 600;
+
+  color: #ffffff;
 }
 
+.text p {
+  margin: 5px 0 0;
+
+  font-size: 14px;
+
+  color: #a9c1d8;
+}
+
+
+/* =========================
+   FLECHA
+   ========================= */
+
 .arrow {
-  margin-left: auto;
-  font-size: 20px;
+  font-size: 38px;
+  line-height: 1;
+
+  color: #78bfff;
+
+  transition: transform 0.2s ease;
+}
+
+
+/* =========================
+   HOVER
+   ========================= */
+
+.card:hover {
+
+  transform: translateY(-4px);
+
+  background: linear-gradient(
+    145deg,
+    #1576d8,
+    #12508a
+  );
+
+  border-color: rgba(100, 190, 255, 0.75);
+
+  box-shadow:
+    0 9px 0 #144c88,
+    0 15px 30px rgba(0, 100, 180, 0.35),
+    0 0 18px rgba(60, 170, 255, 0.25);
+}
+
+
+.card:hover .icon {
+  background: rgba(80, 170, 240, 0.18);
+
+  transform: scale(1.05);
+}
+
+
+.card:hover .arrow {
+  transform: translateX(5px);
+}
+
+
+/* =========================
+   CLICK / PRESIONADO
+   ========================= */
+
+.card:active {
+
+  transform: translateY(4px);
+
+  box-shadow:
+    0 2px 0 #031222,
+    0 5px 10px rgba(0, 0, 0, 0.3);
+
+  background: linear-gradient(
+    145deg,
+    #082441,
+    #05182a
+  );
+}
+
+
+/* =========================
+   CLICK EN ICONO
+   ========================= */
+
+.card:active .icon {
+  transform: scale(0.96);
 }
