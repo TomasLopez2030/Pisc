@@ -46,27 +46,7 @@ namespace back.Controllers
             return NoContent();
         }
 
-        [HttpPost("actualizar-cantidad")]
-        public async Task<IActionResult> ActualizarCantidad(
-    [FromBody] ActualizarCantidadDto dto)
-        {
-            var limpiezaProducto = await _context.LimpiezaProductos
-                .FirstOrDefaultAsync(lp =>
-                    lp.LimpiezaId == dto.LimpiezaId &&
-                    lp.ProductoId == dto.ProductoId);
-
-            if (limpiezaProducto == null)
-            {
-                return NotFound("El producto no está asociado a esta limpieza");
-            }
-
-            limpiezaProducto.Cantidad = dto.Cantidad;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(limpiezaProducto);
-        }
-
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> EditarProducto(int id, Producto producto)
         {

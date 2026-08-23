@@ -6,6 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'dist/front/browser',
 
   server: {
+    androidScheme: 'http',
     cleartext: true
   }
 };

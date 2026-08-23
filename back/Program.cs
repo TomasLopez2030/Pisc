@@ -3,6 +3,7 @@ using Backend.Data;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://0.0.0.0:5130");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
@@ -23,10 +24,15 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseCors("AllowAngular");
+
+var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+
 
 // Permite servir archivos estáticos (wwwroot si existiera)
 app.UseStaticFiles();

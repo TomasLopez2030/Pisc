@@ -161,3 +161,11 @@
 .card:active .icon {
   transform: scale(0.96);
 }
+
+.card:active {
+  background: linear-gradient(
+    145deg,
+    #1576d8,
+    #12508a
+  );
+}

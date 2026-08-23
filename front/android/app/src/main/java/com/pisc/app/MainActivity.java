@@ -11,9 +11,8 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (bridge != null && bridge.getWebView() != null) {
-            WebSettings settings = bridge.getWebView().getSettings();
-            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }
+        WebSettings settings = getBridge().getWebView().getSettings();
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        settings.setAllowContentAccess(true);
     }
 }

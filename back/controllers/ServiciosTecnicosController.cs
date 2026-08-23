@@ -203,10 +203,13 @@ namespace Backend.Controllers
 
             var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
 
+Console.WriteLine("CARPETA UPLOADS: " + carpeta);
+Console.WriteLine("RUTA COMPLETA: " + rutaCompleta);
             using (var stream = new FileStream(rutaCompleta, FileMode.Create))
             {
                 await archivo.CopyToAsync(stream);
             }
+            Console.WriteLine("¿EXISTE EL ARCHIVO?: " + System.IO.File.Exists(rutaCompleta));
 
             try
             {

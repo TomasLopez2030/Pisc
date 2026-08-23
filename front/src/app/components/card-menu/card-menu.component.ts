@@ -11,6 +11,7 @@ export class CardMenuComponent {
   @Input() title!: string;
   @Input() subtitle!: string;
   @Input() route!: string;
+  cardPresionada = false;
 
   constructor(private router: Router) {}
 
