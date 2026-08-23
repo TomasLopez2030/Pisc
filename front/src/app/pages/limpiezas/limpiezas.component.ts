@@ -474,6 +474,6 @@ export class LimpiezasComponent implements OnInit {
     this.limpiezaPagoSeleccionada = limpieza;
     this.mostrarPopupPago = true;
     this.mostrarReprogramar = false;
-    this.mostrarPopupEstado = true;
+    this.mostrarPopupEstado = false;
   }
 }

@@ -295,10 +295,21 @@ namespace back.Controllers
                 ? 14
                 : 7;
 
+            var proximaFecha = limpieza.Fecha.AddDays(diasASumar);
+
+            // Comprobar si ya existe una limpieza para esa serie y fecha
+            var yaExiste = await _context.Limpiezas
+                .AnyAsync(l =>
+                    l.SerieId == limpieza.SerieId &&
+                    l.Fecha.Date == proximaFecha.Date);
+
+            if (yaExiste)
+                return;
+
             var nuevaLimpieza = new Limpieza
             {
                 ClienteId = limpieza.ClienteId,
-                Fecha = limpieza.Fecha.AddDays(diasASumar),
+                Fecha = proximaFecha,
                 Estado = "pendiente",
                 Precio = 0,
                 Observaciones = "",
@@ -306,13 +317,13 @@ namespace back.Controllers
                 Frecuencia = limpieza.Frecuencia,
                 EstadoPago = "pendiente",
                 Archivada = false,
-                SerieId = limpieza.SerieId // ✔ clave
+                SerieId = limpieza.SerieId
             };
 
             _context.Limpiezas.Add(nuevaLimpieza);
+
             await _context.SaveChangesAsync();
         }
-
         private async Task GenerarLimpiezasPendientes(DateTime fechaSemana)
         {
             Console.WriteLine("===== GenerarLimpiezasPendientes =====");
