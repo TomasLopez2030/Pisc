@@ -153,6 +153,14 @@ export class BombasComponent {
     const grupos: any = {};
 
     this.bombas.forEach((bomba) => {
+      // FILTRO POR CLIENTE
+      if (
+        this.busqueda &&
+        !bomba.nombre?.toLowerCase().includes(this.busqueda.toLowerCase())
+      ) {
+        return;
+      }
+
       if (!grupos[bomba.nombre]) {
         grupos[bomba.nombre] = {
           nombre: bomba.nombre,
@@ -165,6 +173,7 @@ export class BombasComponent {
 
     return Object.values(grupos).map((cliente: any) => ({
       ...cliente,
+
       estadoGeneral: cliente.bombas.every((b: any) => b.estado === 'hecho')
         ? 'hecho'
         : 'pendiente',
@@ -251,19 +260,50 @@ export class BombasComponent {
   }
 
   guardarEdicion() {
+    const bombaActualizada = {
+      id: this.bombaEditando.id,
+      fecha: this.bombaEditando.fecha,
+
+      nombre: this.bombaEditando.nombre,
+      telefono: this.bombaEditando.telefono,
+      direccion: this.bombaEditando.direccion,
+      barrio: this.bombaEditando.barrio,
+      lote: this.bombaEditando.lote,
+      manzana: this.bombaEditando.manzana,
+
+      hp: this.bombaEditando.hp,
+      marca: this.bombaEditando.marca,
+      diagnostico: this.bombaEditando.diagnostico,
+      realizar: this.bombaEditando.realizar,
+
+      estado: this.bombaEditando.estado,
+      precio: this.bombaEditando.precio,
+      estadoPago: this.bombaEditando.estadoPago,
+
+      servicioTecnicoId: this.bombaEditando.servicioTecnicoId,
+    };
+
+    console.log('BOMBA A EDITAR:', bombaActualizada);
+
     this.bombasService
-      .actualizarBomba(this.bombaEditando.id, this.bombaEditando)
+      .actualizarBomba(bombaActualizada.id, bombaActualizada)
       .subscribe({
         next: () => {
-          this.obtenerBombas();
+          Swal.fire({
+            icon: 'success',
+            title: 'Bomba actualizada',
+            confirmButtonText: 'Listo',
+            confirmButtonColor: '#0d6efd',
+          });
 
+          this.obtenerBombas();
           this.cerrarPopupEditar();
         },
 
         error: (err) => {
-          console.error(err);
-
-          alert('Error al editar bomba');
+          console.error('ERROR AL EDITAR BOMBA:', err);
+          console.error('STATUS:', err.status);
+          console.error('ERROR COMPLETO:', JSON.stringify(err.error, null, 2));
         },
       });
   }
@@ -276,36 +316,57 @@ export class BombasComponent {
     this.mostrarConfirmacionEliminarBomba = true;
   }
 
-  volverPendiente(bomba: any) {
-    const actualizado = {
-      ...bomba,
+  volverPendiente() {
+    const bombaActualizada = {
+      id: this.bombaSeleccionada.id,
+      fecha: this.bombaSeleccionada.fecha,
+
+      nombre: this.bombaSeleccionada.nombre,
+      telefono: this.bombaSeleccionada.telefono,
+      direccion: this.bombaSeleccionada.direccion,
+      barrio: this.bombaSeleccionada.barrio,
+      lote: this.bombaSeleccionada.lote,
+      manzana: this.bombaSeleccionada.manzana,
+
+      hp: this.bombaSeleccionada.hp,
+      marca: this.bombaSeleccionada.marca,
+      diagnostico: this.bombaSeleccionada.diagnostico,
+      realizar: this.bombaSeleccionada.realizar,
+
       estado: 'pendiente',
       precio: 0,
       estadoPago: 'pendiente',
+
+      servicioTecnicoId: this.bombaSeleccionada.servicioTecnicoId,
     };
 
-    this.bombasService.actualizarBomba(actualizado.id, actualizado).subscribe({
-      next: () => {
-        this.obtenerBombas();
-      },
+    console.log('BOMBA VOLVIENDO A PENDIENTE:', bombaActualizada);
 
-      error: (err) => {
-        console.error(err);
-        alert('Error al cambiar estado');
-      },
-    });
+    this.bombasService
+      .actualizarBomba(bombaActualizada.id, bombaActualizada)
+      .subscribe({
+        next: () => {
+          this.obtenerBombas();
+          this.cerrarPopupEstado();
+        },
+
+        error: (err) => {
+          console.error('ERROR VOLVIENDO A PENDIENTE:', err);
+          console.error('STATUS:', err.status);
+          console.error('ERROR COMPLETO:', JSON.stringify(err.error, null, 2));
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al cambiar el estado',
+            text: 'No se pudo volver la bomba a pendiente.',
+            confirmButtonText: 'Aceptar',
+          });
+        },
+      });
   }
 
   clickEstadoBomba(bomba: any) {
-    if (bomba.estado === 'hecho') {
-      const confirmar = confirm('¿Volver esta bomba a pendiente?');
-
-      if (!confirmar) return;
-
-      this.volverPendiente(bomba);
-    } else {
-      this.abrirPopupEstado(bomba);
-    }
+    this.abrirPopupEstado(bomba);
   }
 
   confirmarEliminarBomba() {

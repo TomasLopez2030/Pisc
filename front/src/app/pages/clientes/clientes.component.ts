@@ -136,11 +136,13 @@ export class ClientesComponent implements OnInit {
         };
       },
       error: (err) => {
-        console.error('ERROR COMPLETO:', err);
-        console.error('STATUS:', err.status);
-        console.error('BODY:', err.error);
-
-        alert(JSON.stringify(err.error));
+        Swal.fire({
+          icon: 'error',
+          title: 'Debe cargar fecha',
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#0d6efd',
+          target: document.body,
+        });
       },
     });
   }

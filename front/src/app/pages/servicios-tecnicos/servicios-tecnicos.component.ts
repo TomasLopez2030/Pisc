@@ -133,6 +133,14 @@ export class ServiciosTecnicosComponent {
     const grupos: any = {};
 
     this.servicios.forEach((servicio) => {
+      // FILTRO POR CLIENTE
+      if (
+        this.busqueda &&
+        !servicio.nombre?.toLowerCase().includes(this.busqueda.toLowerCase())
+      ) {
+        return;
+      }
+
       if (!grupos[servicio.nombre]) {
         grupos[servicio.nombre] = {
           nombre: servicio.nombre,
@@ -145,6 +153,7 @@ export class ServiciosTecnicosComponent {
 
     return Object.values(grupos).map((cliente: any) => ({
       ...cliente,
+
       estadoGeneral: cliente.servicios.every((s: any) => s.estado === 'hecho')
         ? 'hecho'
         : 'pendiente',
@@ -244,17 +253,44 @@ export class ServiciosTecnicosComponent {
 
   volverPendiente() {
     const actualizado = {
-      ...this.servicioSeleccionado,
+      id: this.servicioSeleccionado.id,
+      fecha: this.servicioSeleccionado.fecha,
+      titulo: this.servicioSeleccionado.titulo,
+      nombre: this.servicioSeleccionado.nombre,
+      telefono: this.servicioSeleccionado.telefono,
+      direccion: this.servicioSeleccionado.direccion,
+      barrio: this.servicioSeleccionado.barrio,
+      lote: this.servicioSeleccionado.lote,
+      manzana: this.servicioSeleccionado.manzana,
+
+      diagnosticoGeneral: this.servicioSeleccionado.diagnosticoGeneral,
+      diagnostico: this.servicioSeleccionado.diagnostico,
+      trabajoRealizado: this.servicioSeleccionado.trabajoRealizado,
+      observaciones: this.servicioSeleccionado.observaciones,
+
       estado: 'pendiente',
       precio: 0,
       estadoPago: 'pendiente',
+
+      archivada: this.servicioSeleccionado.archivada,
     };
+
+    console.log('ENVIANDO VOLVER A PENDIENTE:', actualizado);
 
     this.serviciosService
       .actualizarServicio(actualizado.id, actualizado)
-      .subscribe(() => {
-        this.obtenerServicios();
-        this.cerrarPopupEstado();
+      .subscribe({
+        next: (respuesta) => {
+          console.log('SERVICIO VUELTO A PENDIENTE:', respuesta);
+
+          this.obtenerServicios();
+          this.cerrarPopupEstado();
+        },
+        error: (err) => {
+          console.error('ERROR VOLVIENDO A PENDIENTE:', err);
+          console.error('STATUS:', err.status);
+          console.error('ERROR:', err.error);
+        },
       });
   }
 
@@ -368,19 +404,51 @@ export class ServiciosTecnicosComponent {
   }
 
   guardarEdicion() {
-    this.serviciosService
-      .actualizarServicioTecnico(
-        this.servicioEditando.id,
-        this.servicioEditando,
-      )
-      .subscribe({
-        next: () => {
-          this.obtenerServicios();
+    const actualizado = {
+      id: this.servicioEditando.id,
+      fecha: this.servicioEditando.fecha,
+      titulo: this.servicioEditando.titulo,
+      nombre: this.servicioEditando.nombre,
+      telefono: this.servicioEditando.telefono,
+      direccion: this.servicioEditando.direccion,
+      barrio: this.servicioEditando.barrio,
+      lote: this.servicioEditando.lote,
+      manzana: this.servicioEditando.manzana,
 
+      diagnosticoGeneral: this.servicioEditando.diagnosticoGeneral,
+      diagnostico: this.servicioEditando.diagnostico,
+      trabajoRealizado: this.servicioEditando.trabajoRealizado,
+      observaciones: this.servicioEditando.observaciones,
+
+      estado: this.servicioEditando.estado,
+      precio: this.servicioEditando.precio,
+      estadoPago: this.servicioEditando.estadoPago,
+      archivada: this.servicioEditando.archivada,
+    };
+
+    console.log('ENVIANDO SERVICIO EDITADO:', actualizado);
+
+    this.serviciosService
+      .actualizarServicioTecnico(actualizado.id, actualizado)
+      .subscribe({
+        next: (respuesta) => {
+          console.log('SERVICIO EDITADO CORRECTAMENTE:', respuesta);
+
+          this.obtenerServicios();
           this.cerrarPopupEditar();
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Servicio actualizado',
+            confirmButtonText: 'Listo',
+            confirmButtonColor: '#0d6efd',
+          });
         },
+
         error: (err) => {
-          console.error(err);
+          console.error('ERROR AL EDITAR SERVICIO:', err);
+          console.error('STATUS:', err.status);
+          console.error('ERROR:', err.error);
 
           Swal.fire({
             icon: 'error',
