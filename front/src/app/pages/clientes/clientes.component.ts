@@ -116,11 +116,11 @@ export class ClientesComponent implements OnInit {
     this.limpiezasService.crearLimpieza(this.nuevaLimpieza).subscribe({
       next: () => {
         Swal.fire({
-                  icon: 'success',
-                  title: 'Limpieza agregada',
-                  confirmButtonText: 'Listo',
-                  confirmButtonColor: '#0d6efd'
-                });
+          icon: 'success',
+          title: 'Limpieza agregada',
+          confirmButtonText: 'Listo',
+          confirmButtonColor: '#0d6efd',
+        });
         this.cerrarPopup();
         this.mostrarCalendario = false;
         this.fechaSeleccionada = '';
@@ -169,7 +169,7 @@ export class ClientesComponent implements OnInit {
           icon: 'success',
           title: 'Cliente agregado',
           confirmButtonText: 'Listo',
-          confirmButtonColor: '#0d6efd'
+          confirmButtonColor: '#0d6efd',
         });
 
         this.cerrarPopupCliente();
@@ -201,9 +201,23 @@ export class ClientesComponent implements OnInit {
           this.obtenerClientes();
 
           this.cerrarPopupEditarCliente();
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Cliente actualizado',
+            confirmButtonText: 'Listo',
+            confirmButtonColor: '#0d6efd',
+          });
         },
         error: (err) => {
           console.error(err);
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al actualizar cliente',
+            text: 'No se pudo actualizar el cliente.',
+            confirmButtonText: 'Aceptar',
+          });
         },
       });
   }
