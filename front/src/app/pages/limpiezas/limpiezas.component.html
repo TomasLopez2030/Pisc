@@ -135,11 +135,17 @@
     <!-- Pantalla reprogramar -->
     <div *ngIf="mostrarReprogramar">
 
+      <h4>Reprogramar limpieza</h4>
+
+      <label class="form-label">
+        Nueva fecha
+      </label>
+
       <input type="date" class="form-control mb-3" [(ngModel)]="nuevaFecha" />
 
       <button class="btn btn-success w-100 mb-2" (click)="reprogramarLimpieza()">
 
-        Guardar nueva fecha
+        Guardar cambios
 
       </button>
 

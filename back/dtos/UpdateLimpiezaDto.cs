@@ -6,6 +6,7 @@ public class UpdateLimpiezaDto
     public DateTime Fecha { get; set; }
     public string EstadoPago { get; set; } = "";
     public bool Archivada { get; set; }
+    public string Frecuencia { get; set; } = "";
 
     public List<UpdateLimpiezaProductoDto> Productos { get; set; } = new();
 }

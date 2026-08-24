@@ -33,6 +33,7 @@ export class LimpiezasComponent implements OnInit {
   planificaciones: any[] = [];
   opcionEliminar: 'individual' | 'futuras' | 'serie' = 'individual';
   menuAbierto: number | null = null;
+  nuevaFrecuencia: string = '';
 
   constructor(
     private limpiezasService: LimpiezasService,
@@ -266,12 +267,33 @@ export class LimpiezasComponent implements OnInit {
     console.log('Eliminar:', this.limpiezaSeleccionada);
     console.log(this.opcionEliminar);
     console.log(this.limpiezaSeleccionada);
+
+    // LIMPIEZA NO FIJA
     if (!this.limpiezaSeleccionada.esFija) {
       this.limpiezasService
         .eliminarLimpieza(this.limpiezaSeleccionada.id)
-        .subscribe(() => {
-          this.obtenerLimpiezas();
-          this.cerrarPopupEliminar();
+        .subscribe({
+          next: () => {
+            this.obtenerLimpiezas();
+            this.cerrarPopupEliminar();
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Limpieza eliminada',
+              confirmButtonText: 'Listo',
+              confirmButtonColor: '#0d6efd',
+            });
+          },
+          error: (err) => {
+            console.error('ERROR AL ELIMINAR LIMPIEZA:', err);
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo eliminar la limpieza.',
+              confirmButtonText: 'Aceptar',
+            });
+          },
         });
 
       return;
@@ -280,16 +302,32 @@ export class LimpiezasComponent implements OnInit {
     switch (this.opcionEliminar) {
       case 'individual':
         console.log('ELIMINAR INDIVIDUAL');
+
         this.limpiezasService
           .eliminarLimpieza(this.limpiezaSeleccionada.id)
           .subscribe({
-            next: (r) => {
-              console.log('OK', r);
+            next: () => {
               this.obtenerLimpiezas();
               this.cerrarPopupEliminar();
+
+              Swal.fire({
+                icon: 'success',
+                title: 'Limpieza eliminada',
+                text: 'La limpieza seleccionada fue eliminada.',
+                confirmButtonText: 'Listo',
+                confirmButtonColor: '#0d6efd',
+              });
             },
-            error: (e) => {
-              console.error('ERROR', e);
+
+            error: (err) => {
+              console.error('ERROR:', err);
+
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo eliminar la limpieza.',
+                confirmButtonText: 'Aceptar',
+              });
             },
           });
 
@@ -297,6 +335,7 @@ export class LimpiezasComponent implements OnInit {
 
       case 'futuras':
         console.log('ELIMINAR FUTURAS');
+
         this.limpiezasService
           .eliminarFuturas(
             this.limpiezaSeleccionada.serieId,
@@ -306,9 +345,25 @@ export class LimpiezasComponent implements OnInit {
             next: () => {
               this.obtenerLimpiezas();
               this.cerrarPopupEliminar();
+
+              Swal.fire({
+                icon: 'success',
+                title: 'Limpiezas futuras eliminadas',
+                text: 'Las limpiezas futuras fueron dadas de baja.',
+                confirmButtonText: 'Listo',
+                confirmButtonColor: '#0d6efd',
+              });
             },
+
             error: (err) => {
-              console.error(err);
+              console.error('ERROR:', err);
+
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudieron eliminar las limpiezas futuras.',
+                confirmButtonText: 'Aceptar',
+              });
             },
           });
 
@@ -316,11 +371,33 @@ export class LimpiezasComponent implements OnInit {
 
       case 'serie':
         console.log('ELIMINAR SERIE');
+
         this.limpiezasService
           .eliminarSerie(this.limpiezaSeleccionada.serieId)
-          .subscribe(() => {
-            this.obtenerLimpiezas();
-            this.cerrarPopupEliminar();
+          .subscribe({
+            next: () => {
+              this.obtenerLimpiezas();
+              this.cerrarPopupEliminar();
+
+              Swal.fire({
+                icon: 'success',
+                title: 'Serie eliminada',
+                text: 'Se eliminaron todas las limpiezas de la serie.',
+                confirmButtonText: 'Listo',
+                confirmButtonColor: '#0d6efd',
+              });
+            },
+
+            error: (err) => {
+              console.error('ERROR:', err);
+
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo eliminar la serie de limpiezas.',
+                confirmButtonText: 'Aceptar',
+              });
+            },
           });
 
         break;
@@ -331,7 +408,10 @@ export class LimpiezasComponent implements OnInit {
     const limpiezaActualizada = {
       ...this.limpiezaSeleccionada,
       fecha: this.nuevaFecha,
+      frecuencia: this.nuevaFrecuencia,
     };
+
+    console.log('REPROGRAMANDO:', limpiezaActualizada);
 
     this.limpiezasService
       .actualizarLimpieza(this.limpiezaSeleccionada.id, limpiezaActualizada)
@@ -343,12 +423,24 @@ export class LimpiezasComponent implements OnInit {
             confirmButtonText: 'Listo',
             confirmButtonColor: '#0d6efd',
           });
+
           this.obtenerLimpiezas();
           this.cerrarPopupEstado();
+
+          this.mostrarReprogramar = false;
+          this.nuevaFecha = '';
+          this.nuevaFrecuencia = '';
         },
+
         error: (err) => {
-          console.error(err);
-          alert('Error al reprogramar');
+          console.error('ERROR AL REPROGRAMAR:', err);
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al reprogramar',
+            text: 'No se pudo reprogramar la limpieza.',
+            confirmButtonText: 'Aceptar',
+          });
         },
       });
   }

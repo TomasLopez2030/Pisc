@@ -188,6 +188,7 @@ namespace back.Controllers
             limpieza.Observaciones = dto.Observaciones;
             limpieza.EstadoPago = dto.EstadoPago;
             limpieza.Archivada = dto.Archivada;
+            limpieza.Frecuencia = dto.Frecuencia;
 
             _context.LimpiezaProductos.RemoveRange(limpieza.LimpiezaProductos);
 
@@ -238,10 +239,13 @@ namespace back.Controllers
 
             foreach (var l in limpiezas)
             {
-                if (l.Estado.ToLower() != "hecho")
-                {
-                    l.Cancelada = true;
-                }
+                if (l.Estado.ToLower() == "hecho")
+                    continue;
+
+                if (l.Archivada)
+                    continue;
+
+                l.Cancelada = true;
             }
 
             // Desactiva la planificación
@@ -270,6 +274,15 @@ namespace back.Controllers
 
             foreach (var limpieza in limpiezas)
             {
+                // NO cancelar limpiezas hechas
+                if (limpieza.Estado.ToLower() == "hecho")
+                    continue;
+
+                // NO cancelar limpiezas archivadas
+                if (limpieza.Archivada)
+                    continue;
+
+                // Cancelar solamente las pendientes
                 limpieza.Cancelada = true;
             }
 
