@@ -146,20 +146,16 @@
 
                 </button>
 
-                <div class="galeria-fotos" *ngIf="mostrarMiniaturas && servicio.fotos?.length">
+                <div class="foto-miniatura" *ngFor="let foto of servicio.fotos">
 
-                    <div class="foto-miniatura" *ngFor="let foto of servicio.fotos">
+                    <img [src]="'http://100.72.205.3:5130/Uploads/Servicios/' + servicio.id + '/' + foto.nombreArchivo"
+                        (click)="abrirFoto(foto, servicio)">
 
-                        <img [src]="'http://100.72.205.3:5130/Uploads/Servicios/' + servicio.id + '/' + foto.nombreArchivo">
+                    <button class="btn-eliminar-foto" (click)="eliminarFoto(foto, servicio); $event.stopPropagation()">
 
-                        <button class="btn-eliminar-foto"
-                            (click)="eliminarFoto(foto, servicio); $event.stopPropagation()">
+                        ×
 
-                            ×
-
-                        </button>
-
-                    </div>
+                    </button>
 
                 </div>
 
