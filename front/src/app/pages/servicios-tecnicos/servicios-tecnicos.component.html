@@ -133,29 +133,34 @@
 
                 </div>
 
-                <button class="btn-toggle-fotos" (click)="mostrarMiniaturas = !mostrarMiniaturas">
+                <button class="btn-toggle-fotos" (click)="servicio.fotosVisibles = !servicio.fotosVisibles">
 
-                    <span [class.abierto]="mostrarMiniaturas">
+                    <span [class.abierto]="servicio.fotosVisibles">
 
                         <span></span>
                         <span></span>
 
                     </span>
 
-                    {{ mostrarMiniaturas ? 'Ocultar fotos' : 'Fotos' }}
+                    {{ servicio.fotosVisibles ? 'Ocultar fotos' : 'Fotos' }}
 
                 </button>
 
-                <div class="foto-miniatura" *ngFor="let foto of servicio.fotos">
+                <div class="galeria-fotos" *ngIf="servicio.fotosVisibles && servicio.fotos?.length">
 
-                    <img [src]="'http://100.72.205.3:5130/Uploads/Servicios/' + servicio.id + '/' + foto.nombreArchivo"
-                        (click)="abrirFoto(foto, servicio)">
+                    <div class="foto-miniatura" *ngFor="let foto of servicio.fotos">
 
-                    <button class="btn-eliminar-foto" (click)="eliminarFoto(foto, servicio); $event.stopPropagation()">
+                        <img [src]="'http://100.72.205.3:5130/Uploads/Servicios/' + servicio.id + '/' + foto.nombreArchivo"
+                            (click)="abrirFoto(foto, servicio)">
 
-                        ×
+                        <button class="btn-eliminar-foto"
+                            (click)="eliminarFoto(foto, servicio); $event.stopPropagation()">
 
-                    </button>
+                            ×
+
+                        </button>
+
+                    </div>
 
                 </div>
 

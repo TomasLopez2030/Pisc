@@ -57,7 +57,7 @@ export class ServiciosTecnicosComponent {
   mostrarPopupEliminarServicio = false;
   servicioAEliminar: any = null;
 
-  mostrarMiniaturas = false;
+  
 
   fotoAEliminar: any = null;
   servicioFotoAEliminar: any = null;
