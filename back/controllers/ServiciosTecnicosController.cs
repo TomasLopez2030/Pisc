@@ -25,6 +25,17 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<ServicioTecnico>>> GetServicios()
         {
             return await _context.ServiciosTecnicos
+        .Where(s => !s.Archivada)
+        .OrderByDescending(s => s.Id)
+        .Include(s => s.Fotos)
+        .ToListAsync();
+        }
+
+        [HttpGet("archivados")]
+        public async Task<ActionResult<IEnumerable<ServicioTecnico>>> GetServiciosArchivados()
+        {
+            return await _context.ServiciosTecnicos
+                .Where(s => s.Archivada)
                 .OrderByDescending(s => s.Id)
                 .Include(s => s.Fotos)
                 .ToListAsync();
@@ -160,6 +171,17 @@ namespace Backend.Controllers
             if (servicio == null)
                 return NotFound();
 
+            // Los registros archivados se conservan como historial
+            if (servicio.Archivada)
+            {
+                return BadRequest("Este servicio está archivado y no puede eliminarse.");
+            }
+
+            if (servicio.Archivada)
+            {
+                return BadRequest("Este servicio está archivado y no puede eliminarse.");
+            }
+
             _context.ServiciosTecnicos.Remove(servicio);
 
             await _context.SaveChangesAsync();
@@ -268,5 +290,9 @@ Console.WriteLine("RUTA COMPLETA: " + rutaCompleta);
 
             return NoContent();
         }
+
+
     }
+
+
 }

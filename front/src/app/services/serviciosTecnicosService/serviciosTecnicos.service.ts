@@ -14,6 +14,10 @@ export class ServiciosTecnicosService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+  getServiciosArchivados(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/archivados`);
+  }
+
   crearServicio(data: any): Observable<any> {
     return this.http.post(this.apiUrl, data);
   }

@@ -14,6 +14,10 @@ export class BombasService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+  getBombasArchivadas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/archivados`);
+  }
+
   crearBomba(data: any): Observable<any> {
     return this.http.post(this.apiUrl, data);
   }
@@ -44,7 +48,7 @@ export class BombasService {
 
   cambiarEstadoPago(id: number, estadoPago: string) {
     return this.http.patch(`${this.apiUrl}/${id}/estado-pago`, {
-      estadoPago, 
+      estadoPago,
     });
   }
 }
