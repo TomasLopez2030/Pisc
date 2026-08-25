@@ -309,27 +309,45 @@
 
         <h4>Eliminar bomba</h4>
 
+        <!-- BOMBA PENDIENTE -->
+        <ng-container *ngIf="bombaAEliminar?.estado !== 'hecho'; else bombaHecha">
 
-        <p>
-            ¿Está seguro que desea eliminar la bomba
-            <strong>
-                {{ bombaAEliminar?.marca }}
-                {{ bombaAEliminar?.hp }}HP
-            </strong>?
-        </p>
+            <p>
+                ¿Está seguro que desea eliminar la bomba
+                <strong>
+                    {{ bombaAEliminar?.marca }}
+                    {{ bombaAEliminar?.hp }}HP
+                </strong>?
+            </p>
 
+        </ng-container>
 
-        <p>
-            Esta acción no se puede deshacer.
-        </p>
+        <!-- BOMBA HECHA -->
+        <ng-template #bombaHecha>
 
+            <p>
+                ¿Desea eliminar esta bomba sin antes archivarla?
+            </p>
+
+            <p>
+                <strong>
+                    {{ bombaAEliminar?.marca }}
+                    {{ bombaAEliminar?.hp }}HP
+                </strong>
+            </p>
+
+            <p class="advertencia-eliminar">
+                Si la elimina sin archivarla, se perderá del registro
+                y no podrá recuperarse.
+            </p>
+
+        </ng-template>
 
         <button class="btn btn-danger w-100 mb-2" (click)="confirmarEliminarBomba()">
 
             Eliminar
 
         </button>
-
 
         <button class="btn btn-outline-secondary w-100" (click)="cancelarEliminarBomba()">
 

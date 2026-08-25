@@ -20,7 +20,21 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bomba>>> GetBombas()
         {
-            return await _context.Bombas.OrderByDescending(s => s.Id).Include(b => b.Fotos).ToListAsync();
+            return await _context.Bombas
+        .Where(b => !b.Archivada)
+        .OrderByDescending(s => s.Id)
+        .Include(b => b.Fotos)
+        .ToListAsync();
+        }
+
+        [HttpGet("archivados")]
+        public async Task<ActionResult<IEnumerable<Bomba>>> GetBombasArchivadas()
+        {
+            return await _context.Bombas
+                .Where(b => b.Archivada)
+                .OrderByDescending(b => b.Id)
+                .Include(b => b.Fotos)
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -94,6 +108,12 @@ namespace Backend.Controllers
 
             if (bomba == null)
                 return NotFound();
+
+
+            if (bomba.Archivada)
+            {
+                return BadRequest("Esta bomba está archivada y no puede eliminarse.");
+            }
 
             _context.Bombas.Remove(bomba);
 
@@ -225,5 +245,7 @@ namespace Backend.Controllers
 
             return NoContent();
         }
+
+
     }
 }

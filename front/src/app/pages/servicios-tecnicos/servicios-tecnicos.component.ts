@@ -459,8 +459,14 @@ export class ServiciosTecnicosComponent {
   }
 
   eliminarServicio(servicio: any) {
+    console.log('INTENTANDO ELIMINAR:', servicio);
+    console.log('ID:', servicio.id);
+    console.log('ESTADO:', servicio.estado);
+    console.log('ARCHIVADA:', servicio.archivada);
+
     this.serviciosService.eliminarServicio(servicio.id).subscribe({
       next: () => {
+        console.log('ELIMINACIÓN EXITOSA');
         this.obtenerServicios();
 
         this.menuAbierto = null;
@@ -468,7 +474,9 @@ export class ServiciosTecnicosComponent {
         this.servicioAEliminar = null;
       },
       error: (err) => {
-        console.error(err);
+        console.error('ERROR AL ELIMINAR:', err);
+        console.error('STATUS:', err.status);
+        console.error('ERROR:', err.error);
       },
     });
   }

@@ -393,22 +393,39 @@
 
 </div>
 
-<!--POPUP ELIMINAR-->
+<!-- POPUP ELIMINAR -->
 
-<div *ngFor="let servicio of servicios">
-
-</div>
-
-<!-- Fuera del ngFor y al final del HTML -->
 <div class="modal-overlay" *ngIf="mostrarPopupEliminarServicio">
 
     <div class="modal-confirmacion">
 
         <h3>Eliminar servicio</h3>
 
-        <p>¿Estás seguro de que querés eliminar este servicio?</p>
+        <!-- SERVICIO PENDIENTE -->
+        <ng-container *ngIf="servicioAEliminar?.estado !== 'hecho'; else servicioHecho">
+
+            <p>
+                ¿Estás seguro de que querés eliminar este servicio?
+            </p>
+
+        </ng-container>
+
+        <!-- SERVICIO HECHO -->
+        <ng-template #servicioHecho>
+
+            <p>
+                ¿Deseás eliminar este servicio sin antes archivarlo?
+            </p>
+
+            <p class="advertencia-eliminar">
+                Si lo eliminás sin archivarlo, se perderá del registro
+                y no podrá recuperarse.
+            </p>
+
+        </ng-template>
 
         <div class="acciones">
+
             <button class="btn btn-secondary" (click)="cancelarEliminarServicio()">
                 Cancelar
             </button>
@@ -416,6 +433,7 @@
             <button class="btn btn-danger" (click)="confirmarEliminarServicio()">
                 Sí, eliminar
             </button>
+
         </div>
 
     </div>
