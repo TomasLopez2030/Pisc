@@ -4,18 +4,18 @@
 
   <div class="barra-superior mb-3">
 
-        <div class="input-group buscador-container">
+    <div class="input-group buscador-container">
 
-            <input type="text" class="form-control" placeholder="Buscar cliente..." [(ngModel)]="busqueda">
+      <input type="text" class="form-control" placeholder="Buscar cliente..." [(ngModel)]="busqueda">
 
-            <button class="btn btn-primary" (click)="abrirPopupCliente()">
-                +
-            </button>
-
-        </div>
+      <button class="btn btn-primary" (click)="abrirPopupCliente()">
+        +
+      </button>
 
     </div>
-    
+
+  </div>
+
 
   <ul class="list-group">
     <li *ngFor="let cliente of clientesFiltrados" class="list-group-item" (mousedown)="startPress(cliente)"
@@ -103,6 +103,8 @@
           <option value="">Frecuencia</option>
           <option value="semanal">Por semana</option>
           <option value="quincenal">Cada 15 días</option>
+          <option value="cada 3 semanas">Cada 3 semanas</option>
+          <option value="cada 4 semanas">Cada 4 semanas</option>
         </select>
       </div>
 
@@ -195,15 +197,11 @@
       <strong>{{ clienteAEliminar?.nombre }}</strong>?
     </p>
 
-    <button
-      class="btn btn-danger w-100 mb-2"
-      (click)="confirmarEliminar()">
+    <button class="btn btn-danger w-100 mb-2" (click)="confirmarEliminar()">
       Sí, eliminar
     </button>
 
-    <button
-      class="btn btn-outline-secondary w-100"
-      (click)="cancelarEliminar()">
+    <button class="btn btn-outline-secondary w-100" (click)="cancelarEliminar()">
       Cancelar
     </button>
 

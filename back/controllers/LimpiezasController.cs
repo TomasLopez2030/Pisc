@@ -304,9 +304,16 @@ namespace back.Controllers
             if (!limpieza.EsFija)
                 return;
 
-            var diasASumar = limpieza.Frecuencia.ToLower() == "quincenal"
-                ? 14
-                : 7;
+            var frecuencia = limpieza.Frecuencia.ToLower();
+
+            var diasASumar = frecuencia switch
+            {
+                "semanal" => 7,
+                "quincenal" => 14,
+                "cada 3 semanas" => 21,
+                "cada 4 semanas" => 28,
+                _ => 7
+            };
 
             var proximaFecha = limpieza.Fecha.AddDays(diasASumar);
 
@@ -341,6 +348,7 @@ namespace back.Controllers
         {
             Console.WriteLine("===== GenerarLimpiezasPendientes =====");
             Console.WriteLine($"Fecha semana: {fechaSemana:dd/MM/yyyy}");
+
             var inicioSemana = fechaSemana.Date;
             var finSemana = inicioSemana.AddDays(6);
 
@@ -350,7 +358,10 @@ namespace back.Controllers
 
             foreach (var planificacion in planificaciones)
             {
-                Console.WriteLine($"Cliente {planificacion.ClienteId} - Frecuencia: {planificacion.Frecuencia}");
+                Console.WriteLine(
+                    $"Cliente {planificacion.ClienteId} - Frecuencia: {planificacion.Frecuencia}"
+                );
+
                 DateTime fechaLimpieza = inicioSemana;
 
                 while (fechaLimpieza <= finSemana)
@@ -367,7 +378,9 @@ namespace back.Controllers
                 if (fechaLimpieza.Date < planificacion.FechaInicio.Date)
                 {
                     Console.WriteLine(
-                        $"No se genera: {fechaLimpieza:dd/MM/yyyy} es anterior a la fecha de inicio {planificacion.FechaInicio:dd/MM/yyyy}"
+                        $"No se genera: {fechaLimpieza:dd/MM/yyyy} " +
+                        $"es anterior a la fecha de inicio " +
+                        $"{planificacion.FechaInicio:dd/MM/yyyy}"
                     );
 
                     continue;
@@ -379,29 +392,43 @@ namespace back.Controllers
                 Console.WriteLine($"FechaInicio: {planificacion.FechaInicio:dd/MM/yyyy}");
                 Console.WriteLine($"FechaLimpieza: {fechaLimpieza:dd/MM/yyyy}");
 
-                var diferenciaDeDias = (fechaLimpieza.Date - planificacion.FechaInicio.Date).Days;
+                var diferenciaDeDias =
+                    (fechaLimpieza.Date - planificacion.FechaInicio.Date).Days;
+
                 Console.WriteLine($"DiferenciaDias: {diferenciaDeDias}");
 
                 var semanas = diferenciaDeDias / 7;
+
                 Console.WriteLine($"Semanas: {semanas}");
-                Console.WriteLine($"Semanas % 2 = {semanas % 2}");
 
+                var frecuencia = planificacion.Frecuencia.ToLower();
 
-                if (planificacion.Frecuencia.ToLower() == "quincenal")
+                var intervaloSemanas = frecuencia switch
                 {
-                    var diferenciaDias = (fechaLimpieza.Date - planificacion.FechaInicio.Date).Days;
+                    "semanal" => 1,
+                    "quincenal" => 2,
+                    "cada 3 semanas" => 3,
+                    "cada 4 semanas" => 4,
+                    _ => 1
+                };
 
-                    if ((diferenciaDias / 7) % 2 != 0)
-                        continue;
-                }
+                Console.WriteLine($"Intervalo semanas: {intervaloSemanas}");
 
-                var existe = await _context.Limpiezas.AnyAsync(l =>
-                    l.SerieId == planificacion.SerieId &&
-                    l.Fecha.Date == fechaLimpieza.Date);
+                if (semanas % intervaloSemanas != 0)
+                    continue;
+
+                var existe = await _context.Limpiezas
+                    .AnyAsync(l =>
+                        l.SerieId == planificacion.SerieId &&
+                        l.Fecha.Date == fechaLimpieza.Date);
 
                 if (existe)
                     continue;
-                Console.WriteLine($"Generando limpieza para serie {planificacion.SerieId} - {fechaLimpieza:dd/MM/yyyy}");
+
+                Console.WriteLine(
+                    $"Generando limpieza para serie {planificacion.SerieId} " +
+                    $"- {fechaLimpieza:dd/MM/yyyy}"
+                );
 
                 _context.Limpiezas.Add(new Limpieza
                 {
