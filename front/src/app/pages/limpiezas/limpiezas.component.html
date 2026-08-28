@@ -25,7 +25,13 @@
           </strong>
 
           <span *ngIf="limpieza.esFija" class="badge-frecuencia">
-            {{ limpieza.frecuencia === 'quincenal' ? 'c/15 días' : 'semanal' }}
+            {{
+            limpieza.frecuencia === 'semanal' ? 'semanal' :
+            limpieza.frecuencia === 'quincenal' ? 'c/15 días' :
+            limpieza.frecuencia === 'cada 3 semanas' ? 'c/3 semanas' :
+            limpieza.frecuencia === 'cada 4 semanas' ? 'c/4 semanas' :
+            limpieza.frecuencia
+            }}
           </span>
 
           <span *ngIf="limpieza.estadoPago === 'debe'" class="badge-debe">
