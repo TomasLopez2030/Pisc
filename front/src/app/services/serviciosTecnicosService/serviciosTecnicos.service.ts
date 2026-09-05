@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ServiciosTecnicosService {
-  private apiUrl = 'http://100.72.205.3:5130/api/serviciostecnicos';
+  private apiUrl = 'http://100.105.172.64:5130/api/serviciostecnicos';
 
   constructor(private http: HttpClient) {}
 

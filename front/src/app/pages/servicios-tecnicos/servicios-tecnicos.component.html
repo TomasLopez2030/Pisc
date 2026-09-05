@@ -150,7 +150,7 @@
 
                     <div class="foto-miniatura" *ngFor="let foto of servicio.fotos">
 
-                        <img [src]="'http://100.72.205.3:5130/Uploads/Servicios/' + servicio.id + '/' + foto.nombreArchivo"
+                        <img [src]="'http://100.105.172.64:5130/Uploads/Servicios/' + servicio.id + '/' + foto.nombreArchivo"
                             (click)="abrirFoto(foto, servicio)">
 
                         <button class="btn-eliminar-foto"
@@ -387,7 +387,7 @@
         </button>
 
         <img
-            [src]="'http://100.72.205.3:5130/Uploads/Servicios/' + servicioFotoSeleccionada.id + '/' + fotoSeleccionada.nombreArchivo">
+            [src]="'http://100.105.172.64:5130/Uploads/Servicios/' + servicioFotoSeleccionada.id + '/' + fotoSeleccionada.nombreArchivo">
 
     </div>
 

@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class PlanificacionesClienteService {
-  private apiUrl = 'http://100.72.205.3:5130/api/Planificaciones';
+  private apiUrl = 'http://100.105.172.64:5130/api/Planificaciones';
 
   constructor(private http: HttpClient) {}
 
