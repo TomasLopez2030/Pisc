@@ -8,6 +8,7 @@ namespace back.Models.DTOs
         public decimal Precio { get; set; }
         public string? Observaciones { get; set; }
         public bool EsFija { get; set; }
+        public bool SoloProductos { get; set; }
         public string Frecuencia { get; set; } = "";
         
     }

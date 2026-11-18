@@ -50,7 +50,13 @@
                         </strong>
 
                         <div class="text-muted small">
-                            {{ bomba.fecha | date:'dd/MM/yyyy' }}
+                            <strong>Fecha de solicitud:</strong>
+                            {{ formatearFecha(bomba.fecha) }}
+                        </div>
+
+                        <div class="text-muted small">
+                            <strong>Fecha de realización:</strong>
+                            {{ formatearFecha(bomba.fechaRealizacion) }}
                         </div>
 
                     </div>
@@ -166,7 +172,15 @@
 
         <h4>Nueva bomba</h4>
 
-        <input type="date" class="form-control mb-2" [(ngModel)]="nuevoRegistro.fecha" />
+        <div class="campo">
+            <label class="form-label mb-1">Fecha de solicitud</label>
+            <input type="date" class="form-control mb-2" [(ngModel)]="nuevoRegistro.fecha" />
+        </div>
+
+        <div class="campo">
+            <label class="form-label mb-1">Fecha de realización:</label>
+            <input type="date" class="form-control mb-2" [(ngModel)]="nuevoRegistro.fechaRealizacion">
+        </div>
 
         <input type="text" class="form-control mb-2" placeholder="Buscar cliente" [(ngModel)]="busquedaCliente"
             (focus)="mostrarSugerencias = true" />
@@ -224,6 +238,11 @@
             placeholder="Precio" [(ngModel)]="precioBomba" />
 
         <div *ngIf="bombaSeleccionada?.estado === 'pendiente'">
+            <label class="form-label mb-1">Fecha de realización</label>
+            <input type="date" class="form-control mb-3" [(ngModel)]="bombaSeleccionada.fechaRealizacion" />
+        </div>
+
+        <div *ngIf="bombaSeleccionada?.estado === 'pendiente'">
 
             <button class="btn btn-success w-100 mb-2" (click)="marcarEstado('pagado')">
 
@@ -265,6 +284,12 @@
     <div class="modal-popup">
 
         <h4>Editar bomba</h4>
+
+        <label class="form-label mb-1">Fecha de solicitud</label>
+        <input type="date" class="form-control mb-2" [(ngModel)]="bombaEditando.fecha" />
+
+        <label class="form-label mb-1">Fecha de realización</label>
+        <input type="date" class="form-control mb-2" [(ngModel)]="bombaEditando.fechaRealizacion" />
 
         <input type="text" class="form-control mb-2" placeholder="HP" [(ngModel)]="bombaEditando.hp" />
 

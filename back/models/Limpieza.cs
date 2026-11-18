@@ -9,11 +9,17 @@ namespace back.Models
 
         public int ClienteId { get; set; }
 
+
         [ForeignKey("ClienteId")]
         public Cliente Cliente { get; set; }
 
         [Column(TypeName = "timestamp without time zone")]
         public DateTime Fecha { get; set; }
+
+        public bool Reprogramada { get; set; } = false;
+
+        [Column(TypeName = "timestamp without time zone")]
+        public DateTime? FechaOriginal { get; set; }
 
         public string Estado { get; set; } = "Pendiente";
 
@@ -23,12 +29,14 @@ namespace back.Models
 
         public bool EsFija { get; set; }
 
+        public bool SoloProductos { get; set; } = false;
+
         public string Frecuencia { get; set; } = "";
 
         public string EstadoPago { get; set; } = "pendiente";
 
         public bool Archivada { get; set; } = false;
-        
+
         public int? SerieId { get; set; }
 
         public bool Cancelada { get; set; } = false;

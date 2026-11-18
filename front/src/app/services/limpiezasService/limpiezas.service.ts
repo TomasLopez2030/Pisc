@@ -69,4 +69,10 @@ export class LimpiezasService {
   cambiarArchivado(id: number, archivada: boolean) {
     return this.http.patch(`${this.apiUrl}/${id}/archivado`, { archivada });
   }
+
+  actualizarObservaciones(id: number, observaciones: string) {
+    return this.http.patch(`${this.apiUrl}/${id}/observaciones`, {
+      observaciones,
+    });
+  }
 }

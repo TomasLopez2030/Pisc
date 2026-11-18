@@ -39,11 +39,19 @@ namespace back.Controllers
         Id = l.Id,
         ClienteId = l.ClienteId,
         NombreCliente = l.Cliente.Nombre,
+        Barrio = l.Cliente.Barrio,
+        Lote = l.Cliente.Lote,
+        Manzana = l.Cliente.Manzana,
+        Direccion = l.Cliente.Direccion,
+        Telefono = l.Cliente.Telefono,
         Fecha = l.Fecha,
+        Reprogramada = l.Reprogramada,
+        FechaOriginal = l.FechaOriginal,
         Estado = l.Estado,
         Precio = l.Precio,
         Observaciones = l.Observaciones,
         EsFija = l.EsFija,
+        SoloProductos = l.SoloProductos,
         Frecuencia = l.Frecuencia,
         EstadoPago = l.EstadoPago,
         Archivada = l.Archivada,
@@ -80,6 +88,7 @@ namespace back.Controllers
                 Precio = dto.Precio,
                 Observaciones = dto.Observaciones,
                 EsFija = dto.EsFija,
+                SoloProductos = dto.SoloProductos,
                 Frecuencia = dto.Frecuencia
             };
 
@@ -112,6 +121,7 @@ namespace back.Controllers
                         ClienteId = limpieza.ClienteId,
                         DiaSemana = dias[(int)limpieza.Fecha.DayOfWeek],
                         Frecuencia = limpieza.Frecuencia,
+                        SoloProductos = limpieza.SoloProductos,
                         FechaInicio = limpieza.Fecha,
                         Activa = true
                     };
@@ -174,13 +184,20 @@ namespace back.Controllers
         public async Task<IActionResult> ActualizarLimpieza(int id, UpdateLimpiezaDto dto)
         {
             var limpieza = await _context.Limpiezas
-                .Include(l => l.LimpiezaProductos)
-                .FirstOrDefaultAsync(l => l.Id == id);
+                 .Include(l => l.LimpiezaProductos)
+                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (limpieza == null)
                 return NotFound();
 
             var estadoAnterior = limpieza.Estado;
+            var fechaAnterior = limpieza.Fecha;
+
+            if (fechaAnterior != dto.Fecha)
+            {
+                limpieza.Reprogramada = true;
+                limpieza.FechaOriginal = fechaAnterior;
+            }
 
             limpieza.Fecha = dto.Fecha;
             limpieza.Estado = dto.Estado;
@@ -188,7 +205,12 @@ namespace back.Controllers
             limpieza.Observaciones = dto.Observaciones;
             limpieza.EstadoPago = dto.EstadoPago;
             limpieza.Archivada = dto.Archivada;
-            limpieza.Frecuencia = dto.Frecuencia;
+            limpieza.SoloProductos = dto.SoloProductos;
+
+            if (!string.IsNullOrWhiteSpace(dto.Frecuencia))
+            {
+                limpieza.Frecuencia = dto.Frecuencia;
+            }
 
             _context.LimpiezaProductos.RemoveRange(limpieza.LimpiezaProductos);
 
@@ -202,7 +224,7 @@ namespace back.Controllers
             await _context.SaveChangesAsync();
 
             if (estadoAnterior.ToLower() != "hecho" &&
-                dto.Estado.ToLower() == "hecho")
+               dto.Estado.ToLower() == "hecho")
             {
                 await CrearProximaLimpiezaSiEsFija(limpieza);
             }
@@ -334,6 +356,7 @@ namespace back.Controllers
                 Precio = 0,
                 Observaciones = "",
                 EsFija = true,
+                SoloProductos = limpieza.SoloProductos,
                 Frecuencia = limpieza.Frecuencia,
                 EstadoPago = "pendiente",
                 Archivada = false,
@@ -418,9 +441,13 @@ namespace back.Controllers
                     continue;
 
                 var existe = await _context.Limpiezas
-                    .AnyAsync(l =>
-                        l.SerieId == planificacion.SerieId &&
-                        l.Fecha.Date == fechaLimpieza.Date);
+            .AnyAsync(l =>
+             l.SerieId == planificacion.SerieId &&
+              (
+                    l.Fecha.Date == fechaLimpieza.Date ||
+                   (l.Reprogramada && l.FechaOriginal.HasValue &&
+                   l.FechaOriginal.Value.Date == fechaLimpieza.Date)
+             ));
 
                 if (existe)
                     continue;
@@ -438,6 +465,7 @@ namespace back.Controllers
                     Precio = 0,
                     Observaciones = "",
                     EsFija = true,
+                    SoloProductos = planificacion.SoloProductos,
                     Frecuencia = planificacion.Frecuencia,
                     EstadoPago = "pendiente",
                     Archivada = false,
@@ -480,14 +508,18 @@ namespace back.Controllers
                     ClienteId = l.ClienteId,
                     NombreCliente = l.Cliente.Nombre,
                     Fecha = l.Fecha,
+                    Reprogramada = l.Reprogramada,
+                    FechaOriginal = l.FechaOriginal,
                     Estado = l.Estado,
                     Precio = l.Precio,
                     Observaciones = l.Observaciones,
-                    EstadoPago = l.EstadoPago,
                     EsFija = l.EsFija,
+                    SoloProductos = l.SoloProductos,
                     Frecuencia = l.Frecuencia,
-                    SerieId = l.SerieId,
+                    EstadoPago = l.EstadoPago,
                     Archivada = l.Archivada,
+                    SerieId = l.SerieId,
+                    Cancelada = l.Cancelada,
                     Productos = l.LimpiezaProductos.Select(lp => new ProductoDto
                     {
                         Id = lp.Producto.Id,
@@ -605,6 +637,24 @@ namespace back.Controllers
                 .ToListAsync();
 
             return Ok(planificaciones);
+        }
+
+        [HttpPatch("{id}/observaciones")]
+        public async Task<IActionResult> ActualizarObservaciones(
+    int id,
+    [FromBody] ActualizarObservacionesDto dto)
+        {
+            var limpieza = await _context.Limpiezas
+                .FirstOrDefaultAsync(l => l.Id == id);
+
+            if (limpieza == null)
+                return NotFound();
+
+            limpieza.Observaciones = dto.Observaciones ?? "";
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

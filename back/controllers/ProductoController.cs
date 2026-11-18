@@ -20,7 +20,9 @@ namespace back.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
-            return await _context.Productos.ToListAsync();
+            return await _context.Productos
+        .OrderBy(p => p.Nombre)
+        .ToListAsync();
         }
 
         [HttpPost]

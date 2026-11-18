@@ -88,6 +88,8 @@
     </div>
 
     <!-- VISTA CALENDARIA -->
+
+    <!-- VISTA CALENDARIA -->
     <div *ngIf="mostrarCalendario">
       <h4>Elegir fecha</h4>
 
@@ -95,11 +97,17 @@
 
       <div class="limpieza-fija-container">
         <label class="checkbox-fija">
-          <input type="checkbox" [(ngModel)]="nuevaLimpieza.esFija" />
+          <input type="checkbox" [(ngModel)]="nuevaLimpieza.soloProductos" (change)="cambiarSoloProductos()" />
+          Solo productos
+        </label>
+
+        <label class="checkbox-fija">
+          <input type="checkbox" [(ngModel)]="nuevaLimpieza.esFija" [disabled]="nuevaLimpieza.soloProductos" />
           Limpieza fija
         </label>
 
-        <select *ngIf="nuevaLimpieza.esFija" [(ngModel)]="nuevaLimpieza.frecuencia" class="frecuencia-select">
+        <select *ngIf="nuevaLimpieza.esFija" [(ngModel)]="nuevaLimpieza.frecuencia" class="frecuencia-select"
+          [disabled]="nuevaLimpieza.soloProductos">
           <option value="">Frecuencia</option>
           <option value="semanal">Por semana</option>
           <option value="quincenal">Cada 15 días</option>
@@ -116,7 +124,6 @@
         Volver
       </button>
     </div>
-
   </div>
 </div>
 

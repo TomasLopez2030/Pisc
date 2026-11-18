@@ -19,7 +19,9 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Cliente>>> GetClientes()
         {
-            return await _context.Clientes.OrderByDescending(s => s.Id).ToListAsync();
+            return await _context.Clientes
+    .OrderBy(s => s.Nombre)
+    .ToListAsync();
         }
 
         [HttpPost]

@@ -58,6 +58,7 @@ export class BombasComponent {
 
   nuevoRegistro = {
     fecha: '',
+    fechaRealizacion: '',
     nombre: '',
     telefono: '',
     direccion: '',
@@ -128,7 +129,11 @@ export class BombasComponent {
   }
 
   guardarRegistro() {
-    this.bombasService.crearBomba(this.nuevoRegistro).subscribe({
+    const registro = {
+      ...this.nuevoRegistro,
+      fechaRealizacion: this.nuevoRegistro.fechaRealizacion || null,
+    };
+    this.bombasService.crearBomba(registro).subscribe({
       next: () => {
         Swal.fire({
           icon: 'success',
@@ -189,7 +194,7 @@ export class BombasComponent {
     const actualizada = {
       id: this.bombaSeleccionada.id,
       fecha: this.bombaSeleccionada.fecha,
-
+      fechaRealizacion: this.bombaSeleccionada.fechaRealizacion,
       nombre: this.bombaSeleccionada.nombre,
       telefono: this.bombaSeleccionada.telefono,
       direccion: this.bombaSeleccionada.direccion,
@@ -226,6 +231,7 @@ export class BombasComponent {
 
     this.nuevoRegistro = {
       fecha: '',
+      fechaRealizacion: '',
       nombre: '',
       telefono: '',
       direccion: '',
@@ -246,10 +252,15 @@ export class BombasComponent {
   editarBomba(bomba: any) {
     this.bombaEditando = {
       ...bomba,
+
+      fecha: bomba.fecha ? bomba.fecha.substring(0, 10) : '',
+
+      fechaRealizacion: bomba.fechaRealizacion
+        ? bomba.fechaRealizacion.substring(0, 10)
+        : null,
     };
 
     this.mostrarPopupEditar = true;
-
     this.menuAbierto = null;
   }
 
@@ -263,7 +274,7 @@ export class BombasComponent {
     const bombaActualizada = {
       id: this.bombaEditando.id,
       fecha: this.bombaEditando.fecha,
-
+      fechaRealizacion: this.bombaEditando.fechaRealizacion || null,
       nombre: this.bombaEditando.nombre,
       telefono: this.bombaEditando.telefono,
       direccion: this.bombaEditando.direccion,
@@ -320,7 +331,7 @@ export class BombasComponent {
     const bombaActualizada = {
       id: this.bombaSeleccionada.id,
       fecha: this.bombaSeleccionada.fecha,
-
+      fechaRealizacion: this.bombaSeleccionada.fechaRealizacion,
       nombre: this.bombaSeleccionada.nombre,
       telefono: this.bombaSeleccionada.telefono,
       direccion: this.bombaSeleccionada.direccion,
@@ -521,5 +532,16 @@ export class BombasComponent {
     this.mostrarPopupEliminarFoto = false;
     this.fotoAEliminar = null;
     this.bombaFotoAEliminar = null;
+  }
+
+  formatearFecha(fecha: string | null | undefined): string {
+    if (!fecha) {
+      return 'Pendiente';
+    }
+
+    const fechaSolo = fecha.substring(0, 10);
+    const [anio, mes, dia] = fechaSolo.split('-');
+
+    return `${dia}/${mes}/${anio}`;
   }
 }

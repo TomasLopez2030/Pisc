@@ -50,7 +50,17 @@
                         <strong>{{ servicio.titulo || 'Sin título' }}</strong>
 
                         <div class="text-muted small">
-                            {{ servicio.fecha | date:'dd/MM/yyyy' }}
+                            Fecha de solicitud: {{ formatearFecha(servicio.fecha) }}
+                        </div>
+
+                        <div class="text-muted small">
+                            Fecha de realización:
+                            <span *ngIf="servicio.fechaRealizacion">
+                                {{ formatearFecha(servicio.fechaRealizacion) }}
+                            </span>
+                            <span *ngIf="!servicio.fechaRealizacion">
+                                Pendiente
+                            </span>
                         </div>
                     </div>
 
@@ -179,7 +189,11 @@
 
         <h4>Nuevo servicio</h4>
 
+        <label class="form-label mb-1">Fecha de solicitud</label>
         <input type="date" class="form-control mb-2" [(ngModel)]="nuevoRegistro.fecha" />
+
+        <label class="form-label mb-1">Fecha de realización</label>
+        <input type="date" class="form-control mb-2" [(ngModel)]="nuevoRegistro.fechaRealizacion" />
 
         <input type="text" class="form-control mb-2" placeholder="Título" [(ngModel)]="nuevoRegistro.titulo" />
 
@@ -231,6 +245,11 @@
 
         <input *ngIf="servicioSeleccionado?.estado === 'pendiente'" type="number" class="form-control mb-3"
             placeholder="Precio" [(ngModel)]="precioServicio" />
+
+        <div *ngIf="servicioSeleccionado?.estado === 'pendiente'">
+            <label class="form-label mb-1">Fecha de realización</label>
+            <input type="date" class="form-control mb-3" [(ngModel)]="servicioSeleccionado.fechaRealizacion" />
+        </div>
 
         <div *ngIf="servicioSeleccionado?.estado === 'pendiente'">
 
@@ -288,38 +307,42 @@
 
 <!--POPUP EDITAR SERVICIO-->
 <div *ngIf="mostrarPopupEditar" class="modal-overlay">
-
     <div class="modal-popup">
 
         <h4>Editar servicio</h4>
 
+        <label class="form-label mb-1">Fecha de solicitud</label>
+        <input type="date" class="form-control mb-2" [(ngModel)]="servicioEditando.fecha" />
+
+        <label class="form-label mb-1">Fecha de realización</label>
+        <input type="date" class="form-control mb-2" [(ngModel)]="servicioEditando.fechaRealizacion" />
+
         <input type="text" class="form-control mb-2" placeholder="Título" [(ngModel)]="servicioEditando.titulo" />
 
+
+
         <textarea class="form-control mb-2" placeholder="Diagnóstico" [(ngModel)]="servicioEditando.diagnostico">
-        </textarea>
+    </textarea>
 
         <textarea class="form-control mb-2" placeholder="Trabajo realizado"
             [(ngModel)]="servicioEditando.trabajoRealizado">
-        </textarea>
+    </textarea>
 
         <textarea class="form-control mb-3" placeholder="Observaciones" [(ngModel)]="servicioEditando.observaciones">
-        </textarea>
+    </textarea>
 
         <button class="btn btn-success w-100 mb-2" (click)="guardarEdicion()">
-
             Guardar cambios
-
         </button>
 
         <button class="btn btn-secondary w-100" (click)="cerrarPopupEditar()">
-
             Cancelar
-
         </button>
 
     </div>
-
 </div>
+
+
 
 <!--MOSTRAR MENU CLIENTE ELIMINAR-->
 
