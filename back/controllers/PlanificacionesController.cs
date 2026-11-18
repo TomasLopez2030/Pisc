@@ -13,11 +13,12 @@ public class PlanificacionesController : ControllerBase
         _context = context;
     }
 
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        
         var planificaciones = await _context.PlanificacionesClientes
+            .Where(p => p.Activa)
             .Include(p => p.Cliente)
             .Select(p => new PlanificacionClienteDto
             {
@@ -29,9 +30,11 @@ public class PlanificacionesController : ControllerBase
                 Frecuencia = p.Frecuencia,
                 SerieId = p.SerieId
             })
-    .ToListAsync();
-    Console.WriteLine($"Planificaciones encontradas: {planificaciones.Count}");
+            .ToListAsync();
+
+        Console.WriteLine($"Planificaciones activas encontradas: {planificaciones.Count}");
 
         return Ok(planificaciones);
     }
+
 }

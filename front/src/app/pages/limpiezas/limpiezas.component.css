@@ -231,7 +231,14 @@ h1 {
   padding: 25px;
   border-radius: 15px;
   width: 420px;
-  height: 600px;
+  max-width: 95vw;
+
+  height: auto;
+  max-height: 85vh;
+  overflow-y: auto;
+
+  box-sizing: border-box;
+
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 
   display: flex;
@@ -240,20 +247,24 @@ h1 {
 
 .productos-disponibles {
   height: 180px;
-  overflow-y: scroll;
+  flex-shrink: 0;
+  overflow-y: auto;
   border: 1px solid #eee;
   border-radius: 8px;
   margin-bottom: 15px;
   padding: 8px;
+  box-sizing: border-box;
 }
 
 .productos-agregados {
-  flex: 1;
+  max-height: 220px;
   overflow-y: auto;
-  padding-right: 8px;
+  flex-shrink: 0;
+
+  padding: 8px;
   border: 1px solid #eee;
   border-radius: 8px;
-  padding: 8px;
+  box-sizing: border-box;
 }
 
 .semana-card {
@@ -319,11 +330,29 @@ h1 {
   border-radius: 10px;
 }
 
+.badge-reprogramada {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  background: #dbeafe;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
 .badge-debe {
   font-size: 12px;
   font-weight: 600;
   color: #ca8a04;
   background: #fef3c7;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.badge-solo-productos {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7c3aed;
+  background: #ede9fe;
   padding: 2px 7px;
   border-radius: 10px;
 }
@@ -339,53 +368,165 @@ h1 {
 }
 
 .menu-container {
-    position: relative;
+  position: relative;
 }
 
 .menu-btn {
-    width: 32px;
-    height: 32px;
+  width: 32px;
+  height: 32px;
 
-    border: none;
-    border-radius: 50%;
+  border: none;
+  border-radius: 50%;
 
-    background: #f3f3f3;
+  background: #f3f3f3;
 
-    font-size: 18px;
-    cursor: pointer;
+  font-size: 18px;
+  cursor: pointer;
 }
 
 .menu-btn:hover {
-    background: #e9e9e9;
+  background: #e9e9e9;
 }
 
-.menu-popup{
+.menu-popup {
 
-    position:absolute;
+  position: absolute;
 
-    bottom:36px;
-    right:0;
+  bottom: 36px;
+  right: 0;
 
-    width:170px;
+  width: 170px;
 
-    background:white;
-    border-radius:10px;
-    box-shadow:0 6px 18px rgba(0,0,0,.15);
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
 
-    z-index:9999;
+  z-index: 9999;
 }
 
 .menu-item {
-    padding: 12px 15px;
-    cursor: pointer;
-    font-size: 14px;
+  padding: 12px 15px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .menu-item:hover {
-    background: #f5f5f5;
+  background: #f5f5f5;
 }
 
 .menu-item.eliminar {
-    color: #dc3545;
-    font-weight: 600;
+  color: #dc3545;
+  font-weight: 600;
+}
+
+
+/* RESUMEN SEMANAL DE FRECUENCIAS */
+.resumen-frecuencias {
+  margin-top: 28px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.resumen-frecuencias h3 {
+  margin: 0 0 18px;
+  color: #1e293b;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.frecuencias-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.frecuencia-columna {
+  min-width: 0;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.frecuencia-columna h4 {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.frecuencia-cliente {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.frecuencia-cliente:last-of-type {
+  border-bottom: none;
+}
+
+.frecuencia-nombre {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.sin-frecuencias {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Adaptación a pantallas medianas */
+@media (max-width: 1100px) {
+  .frecuencias-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Adaptación a celulares */
+@media (max-width: 600px) {
+  .resumen-frecuencias {
+    padding: 14px;
+  }
+
+  .frecuencias-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .frecuencia-columna {
+    padding: 10px;
+  }
+}
+
+.pool-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.acciones-derecha {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.cliente-detalle {
+  border-top: 1px solid #dee2e6;
+  margin-top: 10px;
+  padding-top: 10px;
 }

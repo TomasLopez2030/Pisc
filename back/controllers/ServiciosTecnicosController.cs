@@ -96,6 +96,9 @@ namespace Backend.Controllers
             var servicio = new ServicioTecnico
             {
                 Fecha = DateTime.SpecifyKind(dto.Fecha, DateTimeKind.Utc),
+                FechaRealizacion = dto.FechaRealizacion.HasValue
+    ? DateTime.SpecifyKind(dto.FechaRealizacion.Value, DateTimeKind.Utc)
+    : null,
                 Titulo = dto.Titulo,
                 Nombre = dto.Nombre,
                 Telefono = dto.Telefono,
@@ -129,32 +132,31 @@ namespace Backend.Controllers
             if (servicio == null)
                 return NotFound();
 
-            servicio.Fecha = dto.Fecha;
+            servicio.Fecha = DateTime.SpecifyKind(
+    dto.Fecha,
+    DateTimeKind.Utc
+);
 
+            servicio.FechaRealizacion = dto.FechaRealizacion.HasValue
+                ? DateTime.SpecifyKind(
+                    dto.FechaRealizacion.Value,
+                    DateTimeKind.Utc
+                  )
+                : null;
             servicio.Titulo = dto.Titulo;
-
             servicio.Nombre = dto.Nombre;
             servicio.Telefono = dto.Telefono;
-
             servicio.Direccion = dto.Direccion;
             servicio.Barrio = dto.Barrio;
             servicio.Lote = dto.Lote;
             servicio.Manzana = dto.Manzana;
-
             servicio.DiagnosticoGeneral = dto.DiagnosticoGeneral;
-
             servicio.Diagnostico = dto.Diagnostico;
-
             servicio.TrabajoRealizado = dto.TrabajoRealizado;
-
             servicio.Observaciones = dto.Observaciones;
-
             servicio.Estado = dto.Estado;
-
             servicio.Precio = dto.Precio;
-
             servicio.EstadoPago = dto.EstadoPago;
-
             servicio.Archivada = dto.Archivada;
 
             await _context.SaveChangesAsync();
@@ -290,9 +292,5 @@ Console.WriteLine("RUTA COMPLETA: " + rutaCompleta);
 
             return NoContent();
         }
-
-
     }
-
-
 }

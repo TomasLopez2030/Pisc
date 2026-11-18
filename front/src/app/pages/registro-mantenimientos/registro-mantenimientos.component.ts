@@ -24,7 +24,6 @@ export class RegistroMantenimientosComponent implements OnInit {
   limpiezaSeleccionadaMenu: any = null;
 
   productosDisponibles: any[] = [];
-  
 
   busquedaProducto = '';
   menuPagoVisible = false;
@@ -42,23 +41,23 @@ export class RegistroMantenimientosComponent implements OnInit {
   }
 
   obtenerLimpiezas() {
-  this.limpiezasService.getRegistroLimpiezas().subscribe({
-    next: (data: any[]) => {
-      console.table(
-        data.map(l => ({
-          id: l.id,
-          nombre: l.nombreCliente,
-          archivada: l.archivada,
-          estadoPago: l.estadoPago
-        }))
-      );
-      this.limpiezas = data;
-    },
-    error: (err) => {
-      console.error(err);
-    },
-  });
-}
+    this.limpiezasService.getRegistroLimpiezas().subscribe({
+      next: (data: any[]) => {
+        console.table(
+          data.map((l) => ({
+            id: l.id,
+            nombre: l.nombreCliente,
+            archivada: l.archivada,
+            estadoPago: l.estadoPago,
+          })),
+        );
+        this.limpiezas = data;
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 
   obtenerProductos() {
     this.productosService.getProductos().subscribe((data) => {
@@ -95,10 +94,14 @@ export class RegistroMantenimientosComponent implements OnInit {
       agrupadas[limpieza.nombreCliente].push(limpieza);
     });
 
-    return Object.keys(agrupadas).map((cliente) => ({
-      nombre: cliente,
-      limpiezas: agrupadas[cliente],
-    }));
+    return Object.keys(agrupadas)
+      .map((cliente) => ({
+        nombre: cliente,
+        limpiezas: agrupadas[cliente],
+      }))
+      .sort((a, b) =>
+        a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }),
+      );
   }
 
   calcularTotalLimpieza(limpieza: any): number {

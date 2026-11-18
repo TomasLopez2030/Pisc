@@ -56,6 +56,9 @@ namespace back.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("FechaRealizacion")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Hp")
                         .IsRequired()
                         .HasColumnType("text");
@@ -165,6 +168,9 @@ namespace back.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Fecha")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("FechaRealizacion")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Lote")
@@ -288,6 +294,9 @@ namespace back.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime?>("FechaOriginal")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Frecuencia")
                         .IsRequired()
                         .HasColumnType("text");
@@ -298,8 +307,14 @@ namespace back.Migrations
                     b.Property<decimal>("Precio")
                         .HasColumnType("numeric");
 
+                    b.Property<bool>("Reprogramada")
+                        .HasColumnType("boolean");
+
                     b.Property<int?>("SerieId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("SoloProductos")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -359,6 +374,9 @@ namespace back.Migrations
 
                     b.Property<int>("SerieId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("SoloProductos")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

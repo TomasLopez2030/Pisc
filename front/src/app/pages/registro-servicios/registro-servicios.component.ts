@@ -45,18 +45,13 @@ export class RegistroServiciosComponent implements OnInit {
       next: ({ servicios, serviciosArchivados, bombas, bombasArchivadas }) => {
         console.log('SERVICIOS:', servicios);
         console.log('SERVICIOS ARCHIVADOS:', serviciosArchivados);
-
         console.log('BOMBAS:', bombas);
         console.log('BOMBAS ARCHIVADAS:', bombasArchivadas);
+
         const registrosServicios = servicios
           .filter((s: any) => s.estado === 'hecho')
           .map((s: any) => ({
-            id: s.id,
-            nombre: s.nombre,
-            fecha: s.fecha,
-            precio: s.precio,
-            estadoPago: s.estadoPago,
-            estado: s.estado,
+            ...s,
             archivada: false,
             tipo: s.titulo || 'Servicio técnico',
             origen: 'servicio',
@@ -65,12 +60,7 @@ export class RegistroServiciosComponent implements OnInit {
         const registrosServiciosArchivados = serviciosArchivados
           .filter((s: any) => s.estado === 'hecho')
           .map((s: any) => ({
-            id: s.id,
-            nombre: s.nombre,
-            fecha: s.fecha,
-            precio: s.precio,
-            estadoPago: s.estadoPago,
-            estado: s.estado,
+            ...s,
             archivada: true,
             tipo: s.titulo || 'Servicio técnico',
             origen: 'servicio',
@@ -79,12 +69,7 @@ export class RegistroServiciosComponent implements OnInit {
         const registrosBombas = bombas
           .filter((b: any) => b.estado === 'hecho')
           .map((b: any) => ({
-            id: b.id,
-            nombre: b.nombre,
-            fecha: b.fecha,
-            precio: b.precio,
-            estadoPago: b.estadoPago,
-            estado: b.estado,
+            ...b,
             archivada: false,
             tipo: `${b.marca} ${b.hp}HP`,
             origen: 'bomba',
@@ -93,12 +78,7 @@ export class RegistroServiciosComponent implements OnInit {
         const registrosBombasArchivadas = bombasArchivadas
           .filter((b: any) => b.estado === 'hecho')
           .map((b: any) => ({
-            id: b.id,
-            nombre: b.nombre,
-            fecha: b.fecha,
-            precio: b.precio,
-            estadoPago: b.estadoPago,
-            estado: b.estado,
+            ...b,
             archivada: true,
             tipo: `${b.marca} ${b.hp}HP`,
             origen: 'bomba',
@@ -112,18 +92,29 @@ export class RegistroServiciosComponent implements OnInit {
         ].sort(
           (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime(),
         );
+
+        console.log(
+          'FOTOS REGISTRO:',
+          this.registros.map((r) => ({
+            id: r.id,
+            tipo: r.tipo,
+            fotos: r.fotos,
+          })),
+        );
+
         console.log('REGISTROS FINALES:', this.registros);
       },
 
       error: (err) => {
         console.error('ERROR AL OBTENER REGISTROS:', err);
       },
-      
     });
   }
 
-  toggleCliente(nombre: string) {
-    this.clienteExpandido = this.clienteExpandido === nombre ? null : nombre;
+  toggleCliente(nombre: string, tipo: string) {
+    const clave = `${nombre}-${tipo}`;
+
+    this.clienteExpandido = this.clienteExpandido === clave ? null : clave;
   }
 
   agruparPorCliente(estadoPago: string): any[] {
@@ -142,7 +133,9 @@ export class RegistroServiciosComponent implements OnInit {
         grupos[r.nombre].registros.push(r);
       });
 
-    return Object.values(grupos) as any[];
+    return (Object.values(grupos) as any[]).sort((a, b) =>
+      a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }),
+    );
   }
 
   abrirMenuDeuda(registro: any) {
@@ -239,5 +232,16 @@ export class RegistroServiciosComponent implements OnInit {
         .cambiarArchivado(registro.id, false)
         .subscribe(() => this.obtenerRegistros());
     }
+  }
+
+  formatearFecha(fecha: string | null | undefined): string {
+    if (!fecha) {
+      return 'Pendiente';
+    }
+
+    const fechaSolo = fecha.substring(0, 10);
+    const [anio, mes, dia] = fechaSolo.split('-');
+
+    return `${dia}/${mes}/${anio}`;
   }
 }

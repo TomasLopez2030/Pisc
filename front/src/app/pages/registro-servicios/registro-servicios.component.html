@@ -14,7 +14,7 @@
       <div class="card mb-3" *ngFor="let cliente of agruparPorCliente('debe')">
 
         <div class="card-header d-flex justify-content-between align-items-center"
-          (click)="toggleCliente(cliente.nombre)" style="cursor:pointer">
+          (click)="toggleCliente(cliente.nombre, cliente.registros[0].origen)" style="cursor:pointer">
           <span>{{ cliente.nombre }}</span>
 
           <span class="badge bg-warning text-dark">
@@ -23,20 +23,118 @@
 
         </div>
 
-        <div class="card-body" *ngIf="clienteExpandido === cliente.nombre">
+        <div class="card-body" *ngIf="clienteExpandido === cliente.nombre + '-' + cliente.registros[0].origen">
 
-          <div *ngFor="let registro of cliente.registros" class="border-bottom pb-2 mb-2">
+          <div *ngFor="let registro of cliente.registros" class="border-bottom pb-3 mb-3">
 
-            <div>
+            <div class="mb-2">
               <strong>{{ registro.tipo }}</strong>
             </div>
 
             <div>
-              {{ registro.fecha | date:'dd/MM/yyyy' }}
+              <strong>Fecha de solicitud:</strong>
+              {{ formatearFecha(registro.fecha) }}
             </div>
 
-            <div class="precio-debe">
-              ${{ registro.precio }}
+            <div>
+              <strong>Fecha de realización:</strong>
+              <span *ngIf="registro.fechaRealizacion">
+                {{ formatearFecha(registro.fechaRealizacion) }}
+              </span>
+              <span *ngIf="!registro.fechaRealizacion">
+                Pendiente
+              </span>
+            </div>
+
+            <div class="precio-debe mb-2">
+              <strong>Precio:</strong> ${{ registro.precio }}
+            </div>
+
+            <!-- SERVICIO TÉCNICO -->
+            <div *ngIf="registro.origen === 'servicio'">
+
+              <div *ngIf="registro.trabajoRealizado">
+                <strong>Trabajo realizado:</strong>
+                {{ registro.trabajoRealizado }}
+              </div>
+
+              <div *ngIf="registro.diagnostico">
+                <strong>Diagnóstico:</strong>
+                {{ registro.diagnostico }}
+              </div>
+
+              <div *ngIf="registro.diagnosticoGeneral">
+                <strong>Diagnóstico general:</strong>
+                {{ registro.diagnosticoGeneral }}
+              </div>
+
+              <div *ngIf="registro.observaciones">
+                <strong>Observaciones:</strong>
+                {{ registro.observaciones }}
+              </div>
+
+
+              <div *ngIf="registro.fotos?.length > 0" class="mt-3">
+                <strong>Fotos:</strong>
+
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <img *ngFor="let foto of registro.fotos"
+                    [src]="'http://localhost:5130/Uploads/Servicios/' + registro.id + '/' + foto.nombreArchivo"
+                    alt="Foto del servicio" class="img-thumbnail"
+                    style="width: 120px; height: 120px; object-fit: cover;">
+                </div>
+              </div>
+
+            </div>
+
+            <!-- BOMBA -->
+            <div *ngIf="registro.origen === 'bomba'">
+
+              <div *ngIf="registro.realizar">
+                <strong>Trabajo a realizar:</strong>
+                {{ registro.realizar }}
+              </div>
+
+              <div *ngIf="registro.diagnostico">
+                <strong>Diagnóstico:</strong>
+                {{ registro.diagnostico }}
+              </div>
+
+              <div *ngIf="registro.fotos?.length > 0" class="mt-3">
+                <strong>Fotos:</strong>
+
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <img *ngFor="let foto of registro.fotos"
+                    [src]="'http://localhost:5130/Uploads/Bombas/' + registro.id + '/' + foto.nombreArchivo"
+                    alt="Foto de bomba" class="img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;">
+                </div>
+              </div>
+
+            </div>
+
+            <!-- DATOS DEL CLIENTE -->
+            <div class="mt-2">
+
+              <div *ngIf="registro.direccion">
+                <strong>Dirección:</strong>
+                {{ registro.direccion }}
+              </div>
+
+              <div *ngIf="registro.barrio">
+                <strong>Barrio:</strong>
+                {{ registro.barrio }}
+              </div>
+
+              <div *ngIf="registro.telefono">
+                <strong>Teléfono:</strong>
+                {{ registro.telefono }}
+              </div>
+
+              <div *ngIf="registro.lote || registro.manzana">
+                <strong>Lote:</strong> {{ registro.lote || '-' }}
+                <strong class="ms-2">Manzana:</strong> {{ registro.manzana || '-' }}
+              </div>
+
             </div>
 
             <button class="btn btn-warning btn-sm mt-2" (click)="abrirMenuDeuda(registro)">
@@ -60,7 +158,7 @@
       <div class="card mb-3" *ngFor="let cliente of agruparPorCliente('pagado')">
 
         <div class="card-header d-flex justify-content-between align-items-center"
-          (click)="toggleCliente(cliente.nombre)" style="cursor:pointer">
+          (click)="toggleCliente(cliente.nombre, cliente.registros[0].origen)" style="cursor:pointer">
 
           <span>{{ cliente.nombre }}</span>
 
@@ -70,20 +168,112 @@
 
         </div>
 
-        <div class="card-body" *ngIf="clienteExpandido === cliente.nombre">
+        <div class="card-body" *ngIf="clienteExpandido === cliente.nombre + '-' + cliente.registros[0].origen">
 
-          <div *ngFor="let registro of cliente.registros" class="border-bottom pb-2 mb-2">
+          <div *ngFor="let registro of cliente.registros" class="border-bottom pb-3 mb-3">
 
-            <div>
+            <div class="mb-2">
               <strong>{{ registro.tipo }}</strong>
             </div>
 
             <div>
-              {{ registro.fecha | date:'dd/MM/yyyy' }}
+              <strong>Fecha de solicitud:</strong>
+              {{ formatearFecha(registro.fecha) }}
+            </div>
+
+            <div>
+              <strong>Fecha de realización:</strong>
+              {{ formatearFecha(registro.fechaRealizacion) }}
             </div>
 
             <div class="mb-2 text-success">
-              +${{ registro.precio }}
+              <strong>Precio:</strong> +${{ registro.precio }}
+            </div>
+
+            <!-- SERVICIO TÉCNICO -->
+            <div *ngIf="registro.origen === 'servicio'">
+
+              <div *ngIf="registro.trabajoRealizado">
+                <strong>Trabajo realizado:</strong>
+                {{ registro.trabajoRealizado }}
+              </div>
+
+              <div *ngIf="registro.diagnostico">
+                <strong>Diagnóstico:</strong>
+                {{ registro.diagnostico }}
+              </div>
+
+              <div *ngIf="registro.diagnosticoGeneral">
+                <strong>Diagnóstico general:</strong>
+                {{ registro.diagnosticoGeneral }}
+              </div>
+
+              <div *ngIf="registro.observaciones">
+                <strong>Observaciones:</strong>
+                {{ registro.observaciones }}
+              </div>
+
+              <div *ngIf="registro.fotos?.length > 0" class="mt-3">
+                <strong>Fotos:</strong>
+
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <img *ngFor="let foto of registro.fotos"
+                    [src]="'http://localhost:5130/Uploads/Servicios/' + registro.id + '/' + foto.nombreArchivo"
+                    alt="Foto del servicio" class="img-thumbnail"
+                    style="width: 120px; height: 120px; object-fit: cover;">
+                </div>
+              </div>
+
+            </div>
+
+            <!-- BOMBA -->
+            <div *ngIf="registro.origen === 'bomba'">
+
+              <div *ngIf="registro.realizar">
+                <strong>Trabajo a realizar:</strong>
+                {{ registro.realizar }}
+              </div>
+
+              <div *ngIf="registro.diagnostico">
+                <strong>Diagnóstico:</strong>
+                {{ registro.diagnostico }}
+              </div>
+
+              <div *ngIf="registro.fotos?.length > 0" class="mt-3">
+                <strong>Fotos:</strong>
+
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <img *ngFor="let foto of registro.fotos"
+                    [src]="'http://localhost:5130/Uploads/Bombas/' + registro.id + '/' + foto.nombreArchivo"
+                    alt="Foto de bomba" class="img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;">
+                </div>
+              </div>
+
+            </div>
+
+            <!-- DATOS DEL CLIENTE -->
+            <div class="mt-2">
+
+              <div *ngIf="registro.direccion">
+                <strong>Dirección:</strong>
+                {{ registro.direccion }}
+              </div>
+
+              <div *ngIf="registro.barrio">
+                <strong>Barrio:</strong>
+                {{ registro.barrio }}
+              </div>
+
+              <div *ngIf="registro.telefono">
+                <strong>Teléfono:</strong>
+                {{ registro.telefono }}
+              </div>
+
+              <div *ngIf="registro.lote || registro.manzana">
+                <strong>Lote:</strong> {{ registro.lote || '-' }}
+                <strong class="ms-2">Manzana:</strong> {{ registro.manzana || '-' }}
+              </div>
+
             </div>
 
             <button class="btn btn-success btn-sm mt-2" (click)="abrirMenuPago(registro)">
@@ -117,12 +307,44 @@
         </h5>
 
         <p class="mb-1">
-          {{ registro.fecha | date:'dd/MM/yyyy' }}
+          {{ formatearFecha(registro.fecha) }}
+        </p>
+
+        <p class="mb-1">
+          {{ formatearFecha(registro.fechaRealizacion) }}
         </p>
 
         <p class="mb-2">
           +${{ registro.precio }}
         </p>
+
+        <p class="mb-2">
+          {{ registro.trabajoRealizado }}
+        </p>
+
+        <p class="mb-2">
+          {{ registro.diagnostico }}
+        </p>
+
+        <p class="mb-2">
+          {{ registro.observaciones }}
+        </p>
+
+        <!-- FOTOS SERVICIO TÉCNICO -->
+        <div *ngIf="registro.origen === 'servicio' && registro.fotos?.length > 0" class="d-flex flex-wrap gap-2 mt-2">
+
+          <img *ngFor="let foto of registro.fotos"
+            [src]="'http://localhost:5130/Uploads/Servicios/' + registro.id + '/' + foto.nombreArchivo"
+            alt="Foto del servicio" class="img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;">
+        </div>
+
+        <!-- FOTOS BOMBA -->
+        <div *ngIf="registro.origen === 'bomba' && registro.fotos?.length > 0" class="d-flex flex-wrap gap-2 mt-2">
+
+          <img *ngFor="let foto of registro.fotos"
+            [src]="'http://localhost:5130/Uploads/Bombas/' + registro.id + '/' + foto.nombreArchivo" alt="Foto de bomba"
+            class="img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;">
+        </div>
 
         <button class="btn btn-outline-success btn-sm" (click)="restaurarPago(registro)">
           Restaurar

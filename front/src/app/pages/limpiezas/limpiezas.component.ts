@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./limpiezas.component.css'],
 })
 export class LimpiezasComponent implements OnInit {
+  clientes: any[] = [];
   mostrarPopupEstado = false;
   limpiezaSeleccionada: any = null;
   montoLimpieza = 0;
@@ -34,6 +35,16 @@ export class LimpiezasComponent implements OnInit {
   opcionEliminar: 'individual' | 'futuras' | 'serie' = 'individual';
   menuAbierto: number | null = null;
   nuevaFrecuencia: string = '';
+  clienteExpandido: number | null = null;
+
+  diasFrecuencias = [
+    { nombre: 'Lunes', planificaciones: [] as any[] },
+    { nombre: 'Martes', planificaciones: [] as any[] },
+    { nombre: 'Miércoles', planificaciones: [] as any[] },
+    { nombre: 'Jueves', planificaciones: [] as any[] },
+    { nombre: 'Viernes', planificaciones: [] as any[] },
+    { nombre: 'Sábado', planificaciones: [] as any[] },
+  ];
 
   constructor(
     private limpiezasService: LimpiezasService,
@@ -126,8 +137,26 @@ export class LimpiezasComponent implements OnInit {
       console.log(data);
 
       this.planificaciones = data;
+      this.distribuirPlanificacionesPorDia();
 
       this.obtenerLimpiezas();
+    });
+  }
+
+  distribuirPlanificacionesPorDia() {
+    this.diasFrecuencias.forEach((dia) => {
+      dia.planificaciones = this.planificaciones
+        .filter(
+          (p: any) => p.diaSemana?.toLowerCase() === dia.nombre.toLowerCase(),
+        )
+        .filter(
+          (p: any, index: number, lista: any[]) =>
+            lista.findIndex((otra: any) => otra.serieId === p.serieId) ===
+            index,
+        )
+        .sort((a: any, b: any) =>
+          a.nombreCliente.localeCompare(b.nombreCliente),
+        );
     });
   }
 
@@ -208,7 +237,7 @@ export class LimpiezasComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          alert('Error al actualizar limpieza');
+          alert('Error al actualizar mantenimiento');
         },
       });
   }
@@ -279,18 +308,18 @@ export class LimpiezasComponent implements OnInit {
 
             Swal.fire({
               icon: 'success',
-              title: 'Limpieza eliminada',
+              title: 'Mantenimiento eliminado',
               confirmButtonText: 'Listo',
               confirmButtonColor: '#0d6efd',
             });
           },
           error: (err) => {
-            console.error('ERROR AL ELIMINAR LIMPIEZA:', err);
+            console.error('ERROR AL ELIMINAR MANTENIMIENTO:', err);
 
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'No se pudo eliminar la limpieza.',
+              text: 'No se pudo eliminar el mantenimiento.',
               confirmButtonText: 'Aceptar',
             });
           },
@@ -312,8 +341,8 @@ export class LimpiezasComponent implements OnInit {
 
               Swal.fire({
                 icon: 'success',
-                title: 'Limpieza eliminada',
-                text: 'La limpieza seleccionada fue eliminada.',
+                title: 'mantenimiento eliminado',
+                text: 'El mantenimiento seleccionado fue eliminado.',
                 confirmButtonText: 'Listo',
                 confirmButtonColor: '#0d6efd',
               });
@@ -325,7 +354,7 @@ export class LimpiezasComponent implements OnInit {
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'No se pudo eliminar la limpieza.',
+                text: 'No se pudo eliminar el mantenimiento.',
                 confirmButtonText: 'Aceptar',
               });
             },
@@ -405,12 +434,14 @@ export class LimpiezasComponent implements OnInit {
   }
 
   reprogramarLimpieza() {
+    console.log('LIMPIEZA SELECCIONADA:', this.limpiezaSeleccionada);
+    console.log('NUEVA FRECUENCIA:', this.nuevaFrecuencia);
     const limpiezaActualizada = {
       ...this.limpiezaSeleccionada,
       fecha: this.nuevaFecha,
-      frecuencia: this.nuevaFrecuencia,
+      frecuencia: this.limpiezaSeleccionada.frecuencia,
     };
-
+    console.log('OBJETO QUE SE ENVÍA:', limpiezaActualizada);
     console.log('REPROGRAMANDO:', limpiezaActualizada);
 
     this.limpiezasService
@@ -419,7 +450,7 @@ export class LimpiezasComponent implements OnInit {
         next: () => {
           Swal.fire({
             icon: 'success',
-            title: 'Limpieza reprogramada',
+            title: 'Mantenimiento reprogramado',
             confirmButtonText: 'Listo',
             confirmButtonColor: '#0d6efd',
           });
@@ -438,7 +469,7 @@ export class LimpiezasComponent implements OnInit {
           Swal.fire({
             icon: 'error',
             title: 'Error al reprogramar',
-            text: 'No se pudo reprogramar la limpieza.',
+            text: 'No se pudo reprogramar el mantenimiento.',
             confirmButtonText: 'Aceptar',
           });
         },
@@ -487,6 +518,33 @@ export class LimpiezasComponent implements OnInit {
           alert(JSON.stringify(err.error));
         },
       });
+  }
+
+  guardarObservaciones() {
+    const id = this.limpiezaSeleccionada.id;
+    const observaciones = this.limpiezaSeleccionada.observaciones || '';
+
+    this.limpiezasService.actualizarObservaciones(id, observaciones).subscribe({
+      next: () => {
+        this.mostrarPopupProductos = false;
+        this.productoSeleccionadoId = null;
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Observaciones guardadas',
+          timer: 1200,
+          showConfirmButton: false,
+        });
+      },
+      error: (err) => {
+        console.error('Error al guardar observaciones:', err);
+        Swal.fire(
+          'Error',
+          'No se pudieron guardar las observaciones.',
+          'error',
+        );
+      },
+    });
   }
 
   quitarProductoDeLimpieza(producto: any) {

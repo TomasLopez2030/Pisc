@@ -6,8 +6,8 @@ namespace Backend.Models
     public class ServicioTecnico
     {
         public int Id { get; set; }
-
         public DateTime Fecha { get; set; }
+        public DateTime? FechaRealizacion { get; set; }
         public string Titulo { get; set; } = "";
         public string Nombre { get; set; } = "";
         public string Telefono { get; set; } = "";
@@ -25,6 +25,5 @@ namespace Backend.Models
         public bool Archivada { get; set; } = false;
         public ICollection<FotoServicio> Fotos { get; set; } = new List<FotoServicio>();
 
-        
     }
 }

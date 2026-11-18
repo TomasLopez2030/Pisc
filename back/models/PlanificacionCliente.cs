@@ -17,5 +17,6 @@ namespace back.Models
         public bool Activa { get; set; } = true;
         public int SerieId { get; set; }
         public bool Archivada { get; set; } = false;
+        public bool SoloProductos { get; set; } = false;
     }
 }

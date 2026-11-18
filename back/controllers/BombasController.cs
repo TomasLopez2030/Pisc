@@ -57,6 +57,14 @@ namespace Backend.Controllers
        bomba.Fecha,
        DateTimeKind.Utc
    );
+
+            if (bomba.FechaRealizacion.HasValue)
+            {
+                bomba.FechaRealizacion = DateTime.SpecifyKind(
+                    bomba.FechaRealizacion.Value,
+                    DateTimeKind.Utc
+                );
+            }
             _context.Bombas.Add(bomba);
             await _context.SaveChangesAsync();
 
@@ -78,7 +86,17 @@ namespace Backend.Controllers
             if (bomba == null)
                 return NotFound();
 
-            bomba.Fecha = dto.Fecha;
+            bomba.Fecha = DateTime.SpecifyKind(
+    dto.Fecha,
+    DateTimeKind.Utc
+);
+
+            bomba.FechaRealizacion = dto.FechaRealizacion.HasValue
+                ? DateTime.SpecifyKind(
+                    dto.FechaRealizacion.Value,
+                    DateTimeKind.Utc
+                  )
+                : null;
             bomba.Nombre = dto.Nombre;
             bomba.Telefono = dto.Telefono;
             bomba.Direccion = dto.Direccion;
@@ -245,7 +263,5 @@ namespace Backend.Controllers
 
             return NoContent();
         }
-
-
     }
 }

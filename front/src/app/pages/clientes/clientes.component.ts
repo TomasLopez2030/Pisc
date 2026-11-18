@@ -50,6 +50,7 @@ export class ClientesComponent implements OnInit {
     observaciones: '',
     esFija: false,
     frecuencia: '',
+    soloProductos: false,
   };
 
   constructor(
@@ -109,6 +110,12 @@ export class ClientesComponent implements OnInit {
       estado: 'pendiente',
       precio: 0,
       observaciones: '',
+      esFija: this.nuevaLimpieza.soloProductos
+        ? false
+        : this.nuevaLimpieza.esFija,
+      frecuencia: this.nuevaLimpieza.soloProductos
+        ? ''
+        : this.nuevaLimpieza.frecuencia,
     };
 
     console.log('payload enviado:', this.nuevaLimpieza);
@@ -117,7 +124,7 @@ export class ClientesComponent implements OnInit {
       next: () => {
         Swal.fire({
           icon: 'success',
-          title: 'Limpieza agregada',
+          title: 'Mantenimiento agregado',
           confirmButtonText: 'Listo',
           confirmButtonColor: '#0d6efd',
         });
@@ -133,6 +140,7 @@ export class ClientesComponent implements OnInit {
           observaciones: '',
           esFija: false,
           frecuencia: '',
+          soloProductos: false,
         };
       },
       error: (err) => {
@@ -254,5 +262,12 @@ export class ClientesComponent implements OnInit {
   cancelarEliminar() {
     this.mostrarConfirmacionEliminar = false;
     this.clienteAEliminar = null;
+  }
+
+  cambiarSoloProductos() {
+    if (this.nuevaLimpieza.soloProductos) {
+      this.nuevaLimpieza.esFija = false;
+      this.nuevaLimpieza.frecuencia = '';
+    }
   }
 }

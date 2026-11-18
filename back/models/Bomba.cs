@@ -5,9 +5,8 @@ namespace Backend.Models
     public class Bomba
     {
         public int Id { get; set; }
-
         public DateTime Fecha { get; set; }
-
+        public DateTime? FechaRealizacion { get; set; }
         public string Nombre { get; set; } = "";
         public string Telefono { get; set; } = "";
         public string Direccion { get; set; } = "";

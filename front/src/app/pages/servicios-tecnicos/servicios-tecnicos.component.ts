@@ -66,6 +66,7 @@ export class ServiciosTecnicosComponent {
 
   nuevoRegistro = {
     fecha: '',
+    fechaRealizacion: '',
     titulo: '',
     nombre: '',
     telefono: '',
@@ -205,8 +206,13 @@ export class ServiciosTecnicosComponent {
 
   guardarRegistro() {
     if (this.modoEdicion) {
+      const registro = {
+        ...this.nuevoRegistro,
+        fechaRealizacion: this.nuevoRegistro.fechaRealizacion || null,
+      };
+
       this.serviciosService
-        .actualizarServicio(this.servicioEditandoId!, this.nuevoRegistro)
+        .actualizarServicio(this.servicioEditandoId!, registro)
         .subscribe({
           next: () => {
             Swal.fire({
@@ -227,7 +233,12 @@ export class ServiciosTecnicosComponent {
       return;
     }
 
-    this.serviciosService.crearServicio(this.nuevoRegistro).subscribe({
+    const registro = {
+      ...this.nuevoRegistro,
+      fechaRealizacion: this.nuevoRegistro.fechaRealizacion || null,
+    };
+
+    this.serviciosService.crearServicio(registro).subscribe({
       next: () => {
         Swal.fire({
           icon: 'success',
@@ -255,6 +266,7 @@ export class ServiciosTecnicosComponent {
     const actualizado = {
       id: this.servicioSeleccionado.id,
       fecha: this.servicioSeleccionado.fecha,
+      fechaRealizacion: this.servicioSeleccionado.fechaRealizacion,
       titulo: this.servicioSeleccionado.titulo,
       nombre: this.servicioSeleccionado.nombre,
       telefono: this.servicioSeleccionado.telefono,
@@ -304,6 +316,7 @@ export class ServiciosTecnicosComponent {
     const actualizado = {
       id: this.servicioSeleccionado.id,
       fecha: this.servicioSeleccionado.fecha,
+      fechaRealizacion: this.servicioSeleccionado.fechaRealizacion,
       titulo: this.servicioSeleccionado.titulo,
       nombre: this.servicioSeleccionado.nombre,
       telefono: this.servicioSeleccionado.telefono,
@@ -391,10 +404,12 @@ export class ServiciosTecnicosComponent {
   editarServicio(servicio: any) {
     this.servicioEditando = {
       ...servicio,
+      fecha: servicio.fecha ? servicio.fecha.substring(0, 10) : '',
+      fechaRealizacion: servicio.fechaRealizacion
+        ? servicio.fechaRealizacion.substring(0, 10)
+        : null,
     };
-
     this.mostrarPopupEditar = true;
-
     this.menuAbierto = null;
   }
 
@@ -407,6 +422,7 @@ export class ServiciosTecnicosComponent {
     const actualizado = {
       id: this.servicioEditando.id,
       fecha: this.servicioEditando.fecha,
+      fechaRealizacion: this.servicioEditando.fechaRealizacion,
       titulo: this.servicioEditando.titulo,
       nombre: this.servicioEditando.nombre,
       telefono: this.servicioEditando.telefono,
@@ -597,5 +613,16 @@ export class ServiciosTecnicosComponent {
     this.mostrarPopupEliminarFoto = false;
     this.fotoAEliminar = null;
     this.servicioFotoAEliminar = null;
+  }
+
+  formatearFecha(fecha: string | null | undefined): string {
+    if (!fecha) {
+      return 'Pendiente';
+    }
+
+    const fechaSolo = fecha.substring(0, 10);
+    const [anio, mes, dia] = fechaSolo.split('-');
+
+    return `${dia}/${mes}/${anio}`;
   }
 }
